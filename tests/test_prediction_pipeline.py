@@ -14,28 +14,28 @@ Run with: pytest tests/ -v
 
 from __future__ import annotations
 
-import sys
 import os
-from datetime import date
+import sys
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
-import numpy as np
 import pandas as pd
 import pytest
+from fastapi.testclient import TestClient
 
 # Make project root importable
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from data.supabase_client import EXPECTED_COLS, fetch_match_data
 from model.wsl_xg_model import (
     ModelConfig,
+    compute_scoreline_matrix,
     estimate_penalty_rates,
     estimate_team_strengths,
     predict_fixtures,
     split_played_future,
     wdl_from_matrix,
-    compute_scoreline_matrix,
 )
-from data.supabase_client import EXPECTED_COLS
 
 
 # ---------------------------------------------------------------------------
@@ -45,22 +45,65 @@ from data.supabase_client import EXPECTED_COLS
 @pytest.fixture
 def sample_df():
     """Minimal match DataFrame matching the RPC schema."""
-    return pd.DataFrame({
-        "match_date": pd.to_datetime([
-            "2025-09-07", "2025-09-14", "2025-09-21",
-            "2025-09-28", "2025-10-05", "2025-10-12",
-            "2025-11-01", "2025-11-08", "2025-11-15",
-        ]),
-        "round_label": ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"],
-        "home_team": ["Arsenal", "Chelsea", "Arsenal", "Chelsea", "Arsenal", "Chelsea", "Arsenal", "Chelsea", "Arsenal"],
-        "away_team": ["Chelsea", "Arsenal", "Chelsea", "Arsenal", "Chelsea", "Arsenal", "Chelsea", "Arsenal", "Chelsea"],
-        "home_xg":    [2.5, 1.2, 2.0, 1.8, 2.3, 1.5, 2.1, 1.9, 2.4],
-        "away_xg":    [1.0, 2.3, 1.1, 2.1, 0.9, 2.2, 1.0, 2.0, 1.1],
-        "home_np_xg": [2.5, 1.2, 2.0, 1.8, 2.3, 1.5, 2.1, 1.9, 2.4],
-        "away_np_xg": [1.0, 2.3, 1.1, 2.1, 0.9, 2.2, 1.0, 2.0, 1.1],
-        "home_goals": [2, 1, 3, 1, 2, 0, 2, 1, 3],
-        "away_goals": [0, 2, 0, 2, 0, 1, 1, 2, 0],
-    })
+    return pd.DataFrame(
+        {
+            "match_date": pd.to_datetime(
+                [
+                    "2025-09-07",
+                    "2025-09-14",
+                    "2025-09-21",
+                    "2025-09-28",
+                    "2025-10-05",
+                    "2025-10-12",
+                    "2025-11-01",
+                    "2025-11-08",
+                    "2025-11-15",
+                ]
+            ),
+            "round_label": ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"],
+            "home_team": [
+                "Arsenal",
+                "Chelsea",
+                "Arsenal",
+                "Chelsea",
+                "Arsenal",
+                "Chelsea",
+                "Arsenal",
+                "Chelsea",
+                "Arsenal",
+            ],
+            "away_team": [
+                "Chelsea",
+                "Arsenal",
+                "Chelsea",
+                "Arsenal",
+                "Chelsea",
+                "Arsenal",
+                "Chelsea",
+                "Arsenal",
+                "Chelsea",
+            ],
+            "home_xg": [2.5, 1.2, 2.0, 1.8, 2.3, 1.5, 2.1, 1.9, 2.4],
+            "away_xg": [1.0, 2.3, 1.1, 2.1, 0.9, 2.2, 1.0, 2.0, 1.1],
+            "home_np_xg": [2.5, 1.2, 2.0, 1.8, 2.3, 1.5, 2.1, 1.9, 2.4],
+            "away_np_xg": [1.0, 2.3, 1.1, 2.1, 0.9, 2.2, 1.0, 2.0, 1.1],
+            "home_goals": [2, 1, 3, 1, 2, 0, 2, 1, 3],
+            "away_goals": [0, 2, 0, 2, 0, 1, 1, 2, 0],
+        }
+    )
+
+
+@pytest.fixture
+def mocked_api_client(monkeypatch):
+    """FastAPI test client with auth env vars set and Supabase startup mocked."""
+    monkeypatch.setenv("API_KEY", "test-api-key")
+    monkeypatch.setenv("SUPABASE_URL", "https://example.supabase.co")
+    monkeypatch.setenv("SUPABASE_SERVICE_ROLE_KEY", "test-service-role-key")
+
+    with patch("api.main.get_supabase_client", return_value=MagicMock()):
+        from api.main import app
+
+        yield TestClient(app)
 
 
 # ---------------------------------------------------------------------------
@@ -71,10 +114,34 @@ class TestSchema:
     def test_expected_cols_match_required_cols(self):
         """EXPECTED_COLS in supabase_client must match REQUIRED_COLS in model."""
         from model.wsl_xg_model import REQUIRED_COLS
+
         assert EXPECTED_COLS == REQUIRED_COLS
 
     def test_sample_df_has_all_cols(self, sample_df):
         assert EXPECTED_COLS.issubset(set(sample_df.columns))
+
+    def test_fetch_match_data_validates_mocked_rpc_schema(self, sample_df):
+        """Supabase RPC rows are validated and coerced without live credentials."""
+        rpc_rows = sample_df.assign(match_date=sample_df["match_date"].dt.strftime("%Y-%m-%d")).to_dict(
+            orient="records"
+        )
+        supabase_client = MagicMock()
+        supabase_client.rpc.return_value.execute.return_value = SimpleNamespace(data=rpc_rows)
+
+        df = fetch_match_data(supabase_client)
+
+        supabase_client.rpc.assert_called_once_with("rpc_wsl_weekly_stats")
+        assert EXPECTED_COLS.issubset(df.columns)
+        assert pd.api.types.is_datetime64_any_dtype(df["match_date"])
+        assert pd.api.types.is_numeric_dtype(df["home_xg"])
+
+    def test_fetch_match_data_rejects_missing_rpc_columns(self, sample_df):
+        rpc_rows = sample_df.drop(columns=["home_np_xg"]).to_dict(orient="records")
+        supabase_client = MagicMock()
+        supabase_client.rpc.return_value.execute.return_value = SimpleNamespace(data=rpc_rows)
+
+        with pytest.raises(ValueError, match="missing expected columns"):
+            fetch_match_data(supabase_client)
 
 
 # ---------------------------------------------------------------------------
@@ -161,15 +228,69 @@ class TestModel:
 # ---------------------------------------------------------------------------
 
 class TestAPI:
-    def test_health_endpoint(self):
-        from fastapi.testclient import TestClient
+    def test_health_endpoint(self, mocked_api_client):
+        resp = mocked_api_client.get("/health")
+        assert resp.status_code == 200
+        assert resp.json()["status"] == "ok"
 
-        with patch("api.main.get_supabase_client") as mock_client:
-            mock_client.return_value = MagicMock()
+    def test_auth_fails_when_api_key_missing(self, mocked_api_client):
+        resp = mocked_api_client.get("/strengths?train_before=2025-11-15")
+        assert resp.status_code == 403
+        assert resp.json()["detail"] == "Invalid or missing API key."
 
-            from api.main import app
-            client = TestClient(app)
+    def test_auth_fails_when_api_key_is_wrong(self, mocked_api_client):
+        resp = mocked_api_client.get(
+            "/strengths?train_before=2025-11-15",
+            headers={"X-API-Key": "wrong-key"},
+        )
+        assert resp.status_code == 403
+        assert resp.json()["detail"] == "Invalid or missing API key."
 
-            resp = client.get("/health")
-            assert resp.status_code == 200
-            assert resp.json()["status"] == "ok"
+    def test_predict_endpoint_smoke_with_mocked_data(self, mocked_api_client, sample_df):
+        with (
+            patch("api.main.fetch_match_data", return_value=sample_df),
+            patch("api.main.log_prediction_run", return_value="run-123"),
+        ):
+            resp = mocked_api_client.post(
+                "/predict",
+                headers={"X-API-Key": "test-api-key"},
+                json={
+                    "train_before": "2025-11-15",
+                    "predict_from": "2025-11-15",
+                    "predict_to": "2025-11-15",
+                },
+            )
+
+        body = resp.json()
+        assert resp.status_code == 200
+        assert body["run_id"] == "run-123"
+        assert body["meta"]["train_matches"] == 8
+        assert body["meta"]["predict_fixtures"] == 1
+        assert len(body["predictions"]) == 1
+        assert body["team_strengths"]
+
+    def test_backtest_endpoint_smoke_with_mocked_data(self, mocked_api_client, sample_df):
+        backtest_result = SimpleNamespace(
+            n_matches=3,
+            brier_score=0.2142,
+            log_loss=0.8123,
+            calibration_bins=[{"bin": "0.0-0.2", "count": 1}],
+            per_match=[{"match_date": "2025-11-01", "actual": "home"}],
+        )
+
+        with (
+            patch("api.main.fetch_match_data", return_value=sample_df),
+            patch("api.main.run_backtest", return_value=backtest_result) as run_backtest_mock,
+        ):
+            resp = mocked_api_client.post(
+                "/backtest",
+                headers={"X-API-Key": "test-api-key"},
+                json={"backtest_start": "2025-10-01"},
+            )
+
+        body = resp.json()
+        assert resp.status_code == 200
+        assert body["n_matches_evaluated"] == 3
+        assert body["brier_score"] == 0.2142
+        assert body["log_loss"] == 0.8123
+        run_backtest_mock.assert_called_once()

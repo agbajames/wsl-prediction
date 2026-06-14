@@ -35,7 +35,6 @@ Required Supabase table (run once in Supabase SQL editor):
 from __future__ import annotations
 
 import logging
-from dataclasses import asdict
 from datetime import date
 from typing import Any
 
