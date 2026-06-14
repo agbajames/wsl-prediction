@@ -68,6 +68,11 @@ curl -X POST http://localhost:8000/backtest \
   -d '{"backtest_start": "2025-10-01"}'
 ```
 
+### Run offline evaluation
+```bash
+python -m evaluation.run_evaluation --start-date 2025-10-01
+```
+
 ### Prediction history
 ```bash
 curl "http://localhost:8000/history?n=5" \

@@ -21,6 +21,7 @@ Already present:
 - Pytest and Ruff configuration in `pyproject.toml`.
 - GitHub Actions CI baseline for linting, tests, security checks, and Docker build validation.
 - Blocking pip-audit dependency security gate.
+- Reusable evaluation metrics and walk-forward evaluation runner.
 - `.gitignore` coverage for `.env`, raw data folders, generated predictions, and CSV files.
 
 ## Priority Gaps
@@ -59,7 +60,7 @@ Already present:
 
 ### P2: Evaluation And Audit Trail
 
-- Persist `/backtest` runs or create a separate `backtest_runs` audit table.
+- Add a dedicated `evaluation_runs` table for offline evaluation results.
 - Add model version metadata to prediction records.
 - Add code revision, image tag, and deployment environment to audit records.
 - Add scheduled prediction run metadata once scheduling exists.
