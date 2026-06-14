@@ -33,9 +33,11 @@ def test_matchweek_manifest_lookup_returns_dates():
     assert window is not None
     assert window.train_before == "2025-09-05"
     assert window.predict_from == "2025-09-05"
-    assert window.predict_to == "2025-09-08"
+    assert window.predict_to == "2025-09-07"
     assert window.run_trigger == "dashboard-season-2025-26-week-01"
-    assert window.verified is False
+    assert window.verified is True
+    assert window.round_label == "R1"
+    assert window.fixture_count == 6
 
 
 def test_full_manifest_returns_22_matchweeks():
@@ -47,13 +49,74 @@ def test_missing_matchweek_returns_none():
     assert available_matchweeks("2099-00") == []
 
 
-def test_unverified_matchweek_warning_logic():
+def test_verified_matchweeks_do_not_show_unverified_warning():
     window = get_matchweek_window("2025-26", 2)
     assert window is not None
 
     messages = matchweek_validation_messages(window)
 
+    assert not any("not verified" in message for message in messages)
+
+
+def test_unverified_matchweek_warning_logic():
+    window = MatchweekWindow(
+        season="2025-26",
+        week=8,
+        train_before="2025-11-08",
+        predict_from="2025-11-08",
+        predict_to="2025-11-09",
+        verified=False,
+    )
+
+    messages = matchweek_validation_messages(window)
+
     assert "not verified" in messages[0]
+
+
+def test_verified_manifest_dates_match_supabase_derived_windows():
+    expected_windows = {
+        2: ("2025-09-12", "2025-09-14"),
+        3: ("2025-09-19", "2025-12-11"),
+        4: ("2025-09-27", "2025-09-28"),
+        5: ("2025-10-03", "2025-10-05"),
+        6: ("2025-10-12", "2025-10-12"),
+        7: ("2025-11-01", "2025-11-02"),
+        8: ("2025-11-08", "2025-11-09"),
+        9: ("2025-11-15", "2025-11-16"),
+        10: ("2025-12-06", "2025-12-07"),
+        11: ("2025-12-13", "2025-12-14"),
+        12: ("2026-01-10", "2026-01-11"),
+        13: ("2026-01-23", "2026-01-25"),
+        14: ("2026-02-01", "2026-04-29"),
+        15: ("2026-02-07", "2026-02-08"),
+        16: ("2026-02-13", "2026-05-06"),
+        17: ("2026-03-15", "2026-03-18"),
+        18: ("2026-03-21", "2026-03-22"),
+        19: ("2026-03-28", "2026-03-29"),
+        20: ("2026-04-25", "2026-05-09"),
+        21: ("2026-05-02", "2026-05-13"),
+        22: ("2026-05-16", "2026-05-16"),
+    }
+
+    for week, (predict_from, predict_to) in expected_windows.items():
+        window = get_matchweek_window("2025-26", week)
+        assert window is not None
+        assert window.predict_from == predict_from
+        assert window.predict_to == predict_to
+        assert window.train_before == predict_from
+        assert window.verified is True
+        assert window.round_label == f"R{week}"
+        assert window.fixture_count == 6
+
+
+def test_irregular_rescheduled_rounds_are_flagged():
+    irregular_weeks = {3, 14, 16, 20, 21}
+
+    for week in irregular_weeks:
+        window = get_matchweek_window("2025-26", week)
+        assert window is not None
+        assert window.status == "verified-rescheduled"
+        assert "rescheduled" in window.note
 
 
 def test_missing_matchweek_date_warning_logic():
@@ -88,7 +151,7 @@ def test_build_predict_payload_uses_backend_schema():
     assert payload == {
         "train_before": "2025-09-12",
         "predict_from": "2025-09-12",
-        "predict_to": "2025-09-15",
+        "predict_to": "2025-09-14",
         "run_trigger": "dashboard-season-2025-26-week-02",
     }
 
@@ -146,7 +209,7 @@ def test_history_summary_flattens_nested_prediction_data():
         "created_at": "2026-06-14T10:00:00Z",
         "train_before": "2025-10-03",
         "predict_from": "2025-10-03",
-        "predict_to": "2025-10-06",
+        "predict_to": "2025-10-05",
         "run_trigger": "dashboard-season-2025-26-week-05",
         "predictions": [{"home_team": "Arsenal"}, {"home_team": "Chelsea"}],
         "team_strengths": [{"team": "Arsenal"}],
@@ -159,7 +222,7 @@ def test_history_summary_flattens_nested_prediction_data():
         "created_at": "2026-06-14T10:00:00Z",
         "train_before": "2025-10-03",
         "predict_from": "2025-10-03",
-        "predict_to": "2025-10-06",
+        "predict_to": "2025-10-05",
         "fixture_count": 2,
         "run_trigger": "dashboard-season-2025-26-week-05",
     }
@@ -188,7 +251,7 @@ def test_prediction_status_inference_from_mocked_history():
 
     status = infer_prediction_status(
         window,
-        [{"predict_from": "2025-10-03", "predict_to": "2025-10-06", "id": "run-123"}],
+        [{"predict_from": "2025-10-03", "predict_to": "2025-10-05", "id": "run-123"}],
     )
 
     assert status == "Predicted"

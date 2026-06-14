@@ -63,8 +63,10 @@ The file `dashboard/matchweek_manifest.py` contains the local season manifest. E
 - `status`
 - `note`
 - `verified`
+- `round_label`
+- `fixture_count`
 
-The replay-readiness baseline includes all 22 WSL 2025-26 matchweek entries. The dates are still placeholders unless `verified=True`, so every window must be checked against official WSL fixtures before final replay.
+The replay manifest now aligns all 22 WSL 2025-26 matchweek entries to Supabase-derived fixture windows from `rpc_wsl_weekly_stats()`. Matchweeks 2-22 are marked verified for dashboard replay. Week 1 remains excluded from baseline replay because it requires historical priors or a previous-season baseline.
 
 ## Full-Season Replay Readiness Workflow
 
@@ -78,14 +80,15 @@ python scripts/inspect_matchweek_windows.py --output reports/replay_manifest_che
 
 To replay week by week:
 
-1. Verify each Matchweek 2-22 manifest window against the data-derived fixture windows and official fixture list.
-2. Set `verified=True` and update `status` or `note` once a window has been checked.
-3. Start FastAPI locally with `.env` loaded.
-4. Start Streamlit and select the season and matchweek.
-5. Confirm the dashboard status labels before generating predictions.
-6. Click **Generate Predictions** for the selected week.
-7. Confirm each generated prediction creates a `prediction_runs` record by refreshing prediction history.
-8. Run evaluation after predictions are logged.
+1. Optionally rerun the fixture-window inspection command to confirm live Supabase data still matches the manifest.
+2. Start FastAPI locally with `.env` loaded.
+3. Start Streamlit and select the season and matchweek.
+4. Confirm the dashboard status labels before generating predictions.
+5. Click **Generate Predictions** for Matchweeks 2 through 22 in order.
+6. Confirm each generated prediction creates a `prediction_runs` record by refreshing prediction history.
+7. Run evaluation after predictions are logged.
+
+Rounds R3, R14, R16, R20, and R21 contain postponed/rescheduled fixtures with long date spans. They are not split in the dashboard manifest yet, so replay and evaluation numbers for those rounds should be interpreted carefully.
 
 The current status inference is intentionally simple. A matchweek is shown as `Predicted` when recent prediction history contains a matching `predict_from` and `predict_to` window. Evaluation status is not yet read reliably in the dashboard and is shown as unavailable/not evaluated.
 
@@ -150,7 +153,8 @@ The current runner may evaluate from the selected start date onward unless a tig
 
 ## Current Limitations
 
-- Manifest dates are placeholders until individually verified.
+- Matchweeks 2-22 are aligned to Supabase-derived fixture windows for baseline replay.
+- R3, R14, R16, R20, and R21 have rescheduled long-window fixture spans and are not split yet.
 - Matchweek 1 historical-prior support is only documented and warned about.
 - Monte Carlo simulation is deferred until after baseline replay metrics are captured.
 - Evaluation status is not inferred from `evaluation_runs` in the dashboard yet.
