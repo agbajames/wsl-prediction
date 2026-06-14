@@ -4,7 +4,9 @@ import os
 
 import streamlit as st
 
+from dashboard.api_client import PredictionApiError, get_prediction_history
 from dashboard.components.evaluation_panel import render_evaluation_panel
+from dashboard.components.history_panel import infer_prediction_status
 from dashboard.components.history_panel import render_history_panel
 from dashboard.components.prediction_panel import render_prediction_panel
 from dashboard.matchweek_manifest import available_matchweeks, available_seasons, get_matchweek_window
@@ -29,12 +31,27 @@ def main() -> None:
         week = st.selectbox("Matchweek", weeks, index=0)
 
     window = get_matchweek_window(season, week)
+    recent_runs = None
+    if api_key:
+        try:
+            recent_runs = get_prediction_history(base_url=base_url, api_key=api_key, n=25)
+        except PredictionApiError:
+            recent_runs = None
+
+    prediction_status = infer_prediction_status(window, recent_runs)
 
     if window:
         st.caption(
             f"Selected {window.season} matchweek {window.week}: "
             f"{window.predict_from} to {window.predict_to}"
         )
+        status_col, evaluation_col, verified_col = st.columns(3)
+        status_col.metric("Prediction Status", prediction_status)
+        evaluation_col.metric("Evaluation Status", "Not evaluated")
+        verified_col.metric("Window Verified", "Yes" if window.verified else "No")
+        if recent_runs is None:
+            st.caption("Prediction status is unavailable until history can be loaded from the API.")
+        st.caption("Evaluation status unavailable from the dashboard baseline.")
 
     prediction_tab, history_tab, evaluation_tab = st.tabs(["Predictions", "History", "Evaluation"])
 

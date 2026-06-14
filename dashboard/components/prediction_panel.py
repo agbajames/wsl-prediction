@@ -6,7 +6,7 @@ import pandas as pd
 import streamlit as st
 
 from dashboard.api_client import PredictionApiError, generate_predictions
-from dashboard.matchweek_manifest import MatchweekWindow
+from dashboard.matchweek_manifest import MatchweekWindow, matchweek_validation_messages
 
 
 def _show_dataframe(records: list[dict[str, Any]], *, empty_message: str) -> None:
@@ -23,19 +23,23 @@ def render_prediction_panel(base_url: str, api_key: str, window: MatchweekWindow
         st.warning("No matchweek dates are configured for this selection.")
         return
 
-    st.caption(window.notes or "No notes for this matchweek.")
+    for message in matchweek_validation_messages(window):
+        st.warning(message)
+
+    st.caption(window.note or "No notes for this matchweek.")
     st.json(
         {
             "train_before": window.train_before,
             "predict_from": window.predict_from,
             "predict_to": window.predict_to,
             "run_trigger": window.run_trigger,
+            "status": window.status,
+            "verified": window.verified,
         },
         expanded=False,
     )
 
     if not window.is_complete:
-        st.warning("Matchweek dates are incomplete. Fill in train_before, predict_from, and predict_to first.")
         return
 
     if st.button("Generate Predictions", type="primary", disabled=not api_key):
