@@ -37,6 +37,12 @@ Create the Supabase audit table once by running:
 scripts/setup_prediction_runs_table.sql
 ```
 
+Create the optional offline evaluation table once by running:
+
+```bash
+scripts/setup_evaluation_runs_table.sql
+```
+
 The SQL should be run in the Supabase SQL editor for the target project.
 
 ## Local Run
