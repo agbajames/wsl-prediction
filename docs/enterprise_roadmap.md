@@ -18,6 +18,7 @@ Already present:
 - Python 3.11 development dependency baseline in `requirements-dev.txt`.
 - Pytest and Ruff configuration in `pyproject.toml`.
 - GitHub Actions CI baseline for linting, tests, security checks, and Docker build validation.
+- Blocking pip-audit dependency security gate.
 - `.gitignore` coverage for `.env`, raw data folders, generated predictions, and CSV files.
 
 ## Priority Gaps
@@ -26,7 +27,7 @@ Already present:
 
 - Add secret scanning to CI.
 - Add an explicit Python version file so local shells, CI, and Docker all agree on Python 3.11.
-- Pin development/test dependency versions once the baseline package set stabilizes.
+- Add dependency lockfile or constraints generation once the baseline package set stabilizes.
 - Add a pre-commit or documented local quality gate for formatting, linting, and secret detection.
 - Verify `.env` and private data files are untracked before every release.
 

@@ -45,8 +45,7 @@ jobs:
       - name: Bandit
         run: python -m bandit -r api data evaluation -x tests,venv
 
-      - name: Pip audit advisory
-        continue-on-error: true
+      - name: Pip audit
         run: python -m pip_audit -r requirements.txt -r requirements-dev.txt
 
       - name: Docker build validation
