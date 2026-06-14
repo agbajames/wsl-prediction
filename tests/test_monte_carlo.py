@@ -127,6 +127,35 @@ def test_monte_carlo_probabilities_and_rank_distribution_are_reported():
     assert arsenal["rank_distribution"] == {1: 5}
 
 
+def test_monte_carlo_output_schema_remains_compatible():
+    starting_table = rank_table(
+        pd.DataFrame(
+            [
+                {"team": "A", "played": 0, "wins": 0, "draws": 0, "losses": 0, "gf": 0, "ga": 0, "gd": 0, "points": 0},
+                {"team": "B", "played": 0, "wins": 0, "draws": 0, "losses": 0, "gf": 0, "ga": 0, "gd": 0, "points": 0},
+            ]
+        )
+    )
+    fixtures = [SimFixture(week=12, match_date="2026-01-10", home_team="A", away_team="B", lambda_home=1.3, lambda_away=0.9)]
+
+    result = run_monte_carlo(starting_table, fixtures, simulations=10, random_seed=1)
+
+    assert set(result) == {"simulations", "random_seed", "remaining_fixture_count", "summary"}
+    assert result["simulations"] == 10
+    assert result["random_seed"] == 1
+    assert result["remaining_fixture_count"] == 1
+    assert {
+        "team",
+        "title_probability",
+        "top3_probability",
+        "top4_probability",
+        "average_final_points",
+        "average_final_goal_difference",
+        "average_rank",
+        "rank_distribution",
+    }.issubset(result["summary"][0])
+
+
 def test_monte_carlo_results_are_reproducible():
     starting_table = rank_table(
         pd.DataFrame(
@@ -142,6 +171,31 @@ def test_monte_carlo_results_are_reproducible():
     second = run_monte_carlo(starting_table, fixtures, simulations=50, random_seed=99)
 
     assert first == second
+
+
+def test_one_hundred_simulations_complete_with_mocked_fixture_data():
+    starting_table = rank_table(
+        pd.DataFrame(
+            [
+                {"team": "A", "played": 11, "wins": 8, "draws": 1, "losses": 2, "gf": 21, "ga": 8, "gd": 13, "points": 25},
+                {"team": "B", "played": 11, "wins": 7, "draws": 1, "losses": 3, "gf": 18, "ga": 11, "gd": 7, "points": 22},
+                {"team": "C", "played": 11, "wins": 5, "draws": 2, "losses": 4, "gf": 15, "ga": 13, "gd": 2, "points": 17},
+                {"team": "D", "played": 11, "wins": 3, "draws": 0, "losses": 8, "gf": 9, "ga": 20, "gd": -11, "points": 9},
+            ]
+        )
+    )
+    fixtures = [
+        SimFixture(week=12, match_date="2026-01-10", home_team="A", away_team="B", lambda_home=1.5, lambda_away=1.1),
+        SimFixture(week=12, match_date="2026-01-11", home_team="C", away_team="D", lambda_home=1.4, lambda_away=0.8),
+        SimFixture(week=13, match_date="2026-01-24", home_team="B", away_team="C", lambda_home=1.2, lambda_away=1.0),
+        SimFixture(week=13, match_date="2026-01-25", home_team="D", away_team="A", lambda_home=0.7, lambda_away=1.8),
+    ]
+
+    result = run_monte_carlo(starting_table, fixtures, simulations=100, random_seed=123)
+
+    assert len(result["summary"]) == 4
+    assert sum(row["title_probability"] for row in result["summary"]) == 1.0
+    assert all(sum(row["rank_distribution"].values()) == 100 for row in result["summary"])
 
 
 def test_markdown_report_contains_required_sections():
