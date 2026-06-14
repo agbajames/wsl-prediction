@@ -6,3 +6,4 @@ httpx
 ruff
 bandit
 pip-audit
+streamlit
