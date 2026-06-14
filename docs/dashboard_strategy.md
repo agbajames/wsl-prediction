@@ -35,15 +35,15 @@ python -m pip install -r requirements.txt -r requirements-dev.txt -c constraints
 Start the FastAPI backend:
 
 ```bash
-uvicorn api.main:app --reload
+python -m uvicorn api.main:app --env-file .env
 ```
 
 Start the dashboard in a second terminal:
 
 ```bash
 PREDICTION_API_BASE_URL=http://localhost:8000 \
-API_KEY=local-dev-api-key \
-streamlit run dashboard/app.py
+API_KEY=$API_KEY \
+python -m streamlit run dashboard/app.py
 ```
 
 The dashboard sidebar lets an analyst set:
@@ -60,9 +60,30 @@ The file `dashboard/matchweek_manifest.py` contains the local season manifest. E
 - `train_before`
 - `predict_from`
 - `predict_to`
-- `notes`
+- `status`
+- `note`
+- `verified`
 
-The first baseline includes placeholder early 2025-26 windows so the structure is ready for the full 22-week fixture list. Dates should be verified against the official WSL schedule before operational use.
+The replay-readiness baseline includes all 22 WSL 2025-26 matchweek entries. The dates are still placeholders unless `verified=True`, so every window must be checked against official WSL fixtures before final replay.
+
+## Replay Readiness Workflow
+
+To replay the completed 2025-26 season week by week:
+
+1. Verify each manifest window against the official fixture list.
+2. Set `verified=True` and update `status` or `note` once a window has been checked.
+3. Start FastAPI locally with `.env` loaded.
+4. Start Streamlit and select the season and matchweek.
+5. Confirm the dashboard status labels before generating predictions.
+6. Click **Generate Predictions** for the selected week.
+7. Refresh prediction history and confirm the selected window moves from `Not run` to `Predicted`.
+8. Run the generated evaluation command after results are available.
+
+The current status inference is intentionally simple. A matchweek is shown as `Predicted` when recent prediction history contains a matching `predict_from` and `predict_to` window. Evaluation status is not yet read reliably in the dashboard and is shown as unavailable/not evaluated.
+
+## Week 1 Limitation
+
+Matchweek 1 requires historical priors or a previous-season baseline because no current-season matches exist before the first fixture. This branch only displays that operational warning. It does not implement historical-prior modelling.
 
 ## Prediction Workflow
 
@@ -92,23 +113,38 @@ The dashboard displays:
 
 The baseline history panel calls `GET /history?n=10` through FastAPI. This keeps prediction history access behind the same API key flow as prediction generation.
 
+The main history table is flattened so nested prediction payloads do not render as raw objects. Detailed run JSON remains available in an expandable preview.
+
 `dashboard/supabase_reader.py` exists for future direct-read panels such as persisted evaluation history. It uses environment variables and does not print secrets.
+
+`prediction_runs` and `evaluation_runs` are separate audit paths:
+
+- `prediction_runs` records generated prediction windows and prediction payloads from FastAPI.
+- `evaluation_runs` records offline evaluation/backtest results when the evaluation runner is executed with `--persist`.
 
 ## Evaluation Workflow
 
 The baseline evaluation panel shows local commands for the selected matchweek:
 
 ```bash
-python -m evaluation.run_evaluation --start-date 2025-10-03 --run-trigger dashboard-season-2025-26-week-05
+python -m evaluation.run_evaluation --start-date 2025-10-03 --run-trigger dashboard-season-2025-26-week-05-evaluation
 ```
 
 If the `evaluation_runs` table is configured, the analyst can persist the result:
 
 ```bash
-python -m evaluation.run_evaluation --start-date 2025-10-03 --run-trigger dashboard-season-2025-26-week-05 --persist
+python -m evaluation.run_evaluation --start-date 2025-10-03 --run-trigger dashboard-season-2025-26-week-05-evaluation --persist
 ```
 
-Automated evaluation execution from Streamlit is deferred so this checkpoint does not add new local process execution behaviour to the dashboard.
+The current runner may evaluate from the selected start date onward unless a tighter matchweek-only window is implemented later. Automated evaluation execution from Streamlit is deferred so this checkpoint does not add new local process execution behaviour to the dashboard.
+
+## Current Limitations
+
+- Manifest dates are placeholders until individually verified.
+- Matchweek 1 historical-prior support is only documented and warned about.
+- Evaluation status is not inferred from `evaluation_runs` in the dashboard yet.
+- Dashboard-triggered evaluation execution is deferred to a future branch.
+- The dashboard is still an internal local analyst tool, not a public frontend.
 
 ## Azure Path
 

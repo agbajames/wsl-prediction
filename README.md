@@ -32,7 +32,7 @@ cp .env.example .env
 # Paste scripts/setup_prediction_runs_table.sql into Supabase SQL editor
 
 # 4. Run locally
-uvicorn api.main:app --reload
+python -m uvicorn api.main:app --env-file .env
 
 # 5. Test
 pytest tests/ -v
@@ -45,15 +45,15 @@ The internal Streamlit dashboard provides an analyst control centre for weekly p
 Start the FastAPI backend:
 
 ```bash
-uvicorn api.main:app --reload
+python -m uvicorn api.main:app --env-file .env
 ```
 
 Start the dashboard in a second terminal:
 
 ```bash
 PREDICTION_API_BASE_URL=http://localhost:8000 \
-API_KEY=your-local-dev-api-key-here \
-streamlit run dashboard/app.py
+API_KEY=$API_KEY \
+python -m streamlit run dashboard/app.py
 ```
 
 The dashboard uses the selected season and matchweek manifest entry to call `POST /predict`, then displays the run metadata, prediction table, team strengths, and recent prediction history.

@@ -6,7 +6,6 @@ Thin client for the FastAPI prediction engine.
 
 from __future__ import annotations
 
-from dataclasses import asdict
 from typing import Any
 
 import httpx
@@ -28,12 +27,12 @@ def _api_url(base_url: str, path: str) -> str:
 
 def build_predict_payload(window: MatchweekWindow) -> dict[str, Any]:
     """Build the POST /predict payload for a selected matchweek."""
-    payload = asdict(window)
-    payload.pop("season")
-    payload.pop("week")
-    payload.pop("notes")
-    payload["run_trigger"] = window.run_trigger
-    return payload
+    return {
+        "train_before": window.train_before,
+        "predict_from": window.predict_from,
+        "predict_to": window.predict_to,
+        "run_trigger": window.run_trigger,
+    }
 
 
 def _headers(api_key: str) -> dict[str, str]:
