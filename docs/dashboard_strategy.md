@@ -66,24 +66,34 @@ The file `dashboard/matchweek_manifest.py` contains the local season manifest. E
 
 The replay-readiness baseline includes all 22 WSL 2025-26 matchweek entries. The dates are still placeholders unless `verified=True`, so every window must be checked against official WSL fixtures before final replay.
 
-## Replay Readiness Workflow
+## Full-Season Replay Readiness Workflow
 
-To replay the completed 2025-26 season week by week:
+The operational replay target is Matchweeks 2-22 of the completed WSL 2025-26 season. Matchweek 1 is excluded from this baseline because it needs historical priors or a previous-season baseline before any current-season matches exist.
 
-1. Verify each manifest window against the official fixture list.
+Before replaying, inspect the fixture windows exposed by the same Supabase RPC used by the prediction API:
+
+```bash
+python scripts/inspect_matchweek_windows.py --output reports/replay_manifest_check.md
+```
+
+To replay week by week:
+
+1. Verify each Matchweek 2-22 manifest window against the data-derived fixture windows and official fixture list.
 2. Set `verified=True` and update `status` or `note` once a window has been checked.
 3. Start FastAPI locally with `.env` loaded.
 4. Start Streamlit and select the season and matchweek.
 5. Confirm the dashboard status labels before generating predictions.
 6. Click **Generate Predictions** for the selected week.
-7. Refresh prediction history and confirm the selected window moves from `Not run` to `Predicted`.
-8. Run the generated evaluation command after results are available.
+7. Confirm each generated prediction creates a `prediction_runs` record by refreshing prediction history.
+8. Run evaluation after predictions are logged.
 
 The current status inference is intentionally simple. A matchweek is shown as `Predicted` when recent prediction history contains a matching `predict_from` and `predict_to` window. Evaluation status is not yet read reliably in the dashboard and is shown as unavailable/not evaluated.
 
 ## Week 1 Limitation
 
 Matchweek 1 requires historical priors or a previous-season baseline because no current-season matches exist before the first fixture. This branch only displays that operational warning. It does not implement historical-prior modelling.
+
+Monte Carlo simulation is also deferred until baseline replay metrics are captured.
 
 ## Prediction Workflow
 
@@ -142,6 +152,7 @@ The current runner may evaluate from the selected start date onward unless a tig
 
 - Manifest dates are placeholders until individually verified.
 - Matchweek 1 historical-prior support is only documented and warned about.
+- Monte Carlo simulation is deferred until after baseline replay metrics are captured.
 - Evaluation status is not inferred from `evaluation_runs` in the dashboard yet.
 - Dashboard-triggered evaluation execution is deferred to a future branch.
 - The dashboard is still an internal local analyst tool, not a public frontend.
