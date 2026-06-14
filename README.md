@@ -111,6 +111,20 @@ python -m evaluation.evaluate_logged_predictions \
   --run-trigger logged-replay-2025-26-weeks-02-22
 ```
 
+### Run mid-season Monte Carlo simulation
+```bash
+python scripts/run_monte_carlo_simulation.py \
+  --season 2025-26 \
+  --cutoff-week 11 \
+  --remaining-start-week 12 \
+  --remaining-end-week 22 \
+  --simulations 10000 \
+  --random-seed 42 \
+  --output reports/monte_carlo_after_week_11_2025_26.md
+```
+
+This builds the actual table through Matchweek 11, reuses the existing model pathway to produce expected-goals lambdas for Matchweeks 12-22, and samples Poisson scorelines to estimate title, top-3, and top-4 probabilities.
+
 ### Prediction history
 ```bash
 curl "http://localhost:8000/history?n=5" \
