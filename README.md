@@ -38,6 +38,26 @@ uvicorn api.main:app --reload
 pytest tests/ -v
 ```
 
+## Local Operations Dashboard
+
+The internal Streamlit dashboard provides an analyst control centre for weekly prediction runs.
+
+Start the FastAPI backend:
+
+```bash
+uvicorn api.main:app --reload
+```
+
+Start the dashboard in a second terminal:
+
+```bash
+PREDICTION_API_BASE_URL=http://localhost:8000 \
+API_KEY=your-local-dev-api-key-here \
+streamlit run dashboard/app.py
+```
+
+The dashboard uses the selected season and matchweek manifest entry to call `POST /predict`, then displays the run metadata, prediction table, team strengths, and recent prediction history.
+
 ## API Usage
 
 All prediction endpoints require `X-API-Key` header.

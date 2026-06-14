@@ -23,6 +23,7 @@ Already present:
 - Blocking pip-audit dependency security gate.
 - Reusable evaluation metrics and walk-forward evaluation runner.
 - Dedicated `evaluation_runs` persistence path for offline evaluation results.
+- Internal Streamlit operations dashboard baseline for local analyst workflows.
 - `.gitignore` coverage for `.env`, raw data folders, generated predictions, and CSV files.
 
 ## Priority Gaps
@@ -77,6 +78,8 @@ Already present:
 
 - Define SLOs for availability, prediction latency, and data freshness.
 - Add dashboards for request volume, failures, latency, Supabase RPC status, and prediction run counts.
+- Complete and verify the full 22-week WSL 2025-26 matchweek manifest.
+- Decide whether the Streamlit operations dashboard remains local-only or is hosted behind internal access controls.
 - Add alerts for failed predictions, missing data, deployment failure, and high 5xx rate.
 - Add incident response steps and owner contacts.
 - Add cost guardrails for Azure resources.
