@@ -19,6 +19,7 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from data.supabase_client import fetch_match_data, get_supabase_client
+from evaluation.evaluation_store import log_evaluation_run
 from evaluation.metrics import evaluate_prediction_set
 from model.wsl_xg_model import ModelConfig, run_backtest
 
@@ -42,6 +43,11 @@ def run_walk_forward_evaluation(
     fit_rho_each_batch: bool = False,
     min_training_matches: int = 10,
     n_bins: int = 5,
+    persist: bool = False,
+    client: Any | None = None,
+    run_trigger: str = "manual",
+    code_version: str | None = None,
+    notes: str | None = None,
 ) -> dict[str, Any]:
     """Run walk-forward evaluation and return a structured JSON-style result.
 
@@ -49,7 +55,8 @@ def run_walk_forward_evaluation(
     Supabase data layer. Tests should pass a local DataFrame fixture.
     """
     if df is None:
-        df = fetch_match_data(get_supabase_client())
+        client = client or get_supabase_client()
+        df = fetch_match_data(client)
 
     config = ModelConfig(alpha=alpha, decay_half_life_days=decay_days, rho=rho)
     start_ts = pd.Timestamp(start_date)
@@ -75,7 +82,8 @@ def run_walk_forward_evaluation(
         }
     )
 
-    return {
+    result = {
+        "run_id": "",
         "generated_at": datetime.now(UTC).isoformat(),
         "evaluation_type": "walk_forward",
         "parameters": {
@@ -97,6 +105,23 @@ def run_walk_forward_evaluation(
         "per_match_results": backtest.per_match,
     }
 
+    if persist:
+        client = client or get_supabase_client()
+        result["run_id"] = log_evaluation_run(
+            client,
+            result,
+            run_trigger=run_trigger,
+            code_version=code_version,
+            notes=notes,
+            data_snapshot={
+                "rows": int(len(df)),
+                "min_match_date": df["match_date"].min().date().isoformat() if not df.empty else None,
+                "max_match_date": df["match_date"].max().date().isoformat() if not df.empty else None,
+            },
+        )
+
+    return result
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run WSL walk-forward model evaluation.")
@@ -107,6 +132,10 @@ def main() -> None:
     parser.add_argument("--fit-rho", action="store_true")
     parser.add_argument("--min-training-matches", type=int, default=10)
     parser.add_argument("--n-bins", type=int, default=5)
+    parser.add_argument("--persist", action="store_true", help="Persist result to Supabase evaluation_runs.")
+    parser.add_argument("--run-trigger", default="manual", help="Audit trigger label.")
+    parser.add_argument("--code-version", default=None, help="Optional git SHA, image tag, or release version.")
+    parser.add_argument("--notes", default=None, help="Optional notes to store with persisted runs.")
     args = parser.parse_args()
 
     result = run_walk_forward_evaluation(
@@ -117,6 +146,10 @@ def main() -> None:
         fit_rho_each_batch=args.fit_rho,
         min_training_matches=args.min_training_matches,
         n_bins=args.n_bins,
+        persist=args.persist,
+        run_trigger=args.run_trigger,
+        code_version=args.code_version,
+        notes=args.notes,
     )
     print(json.dumps(result, indent=2, sort_keys=True))
 

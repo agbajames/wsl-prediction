@@ -73,6 +73,14 @@ curl -X POST http://localhost:8000/backtest \
 python -m evaluation.run_evaluation --start-date 2025-10-01
 ```
 
+Persist an offline evaluation run to Supabase:
+```bash
+python -m evaluation.run_evaluation \
+  --start-date 2025-10-01 \
+  --persist \
+  --run-trigger manual
+```
+
 ### Prediction history
 ```bash
 curl "http://localhost:8000/history?n=5" \

@@ -8,6 +8,7 @@ The evaluation baseline makes the WSL Prediction Engine measurable without chang
 
 - `evaluation/metrics.py`: reusable three-way football prediction metrics.
 - `evaluation/run_evaluation.py`: repeatable walk-forward evaluation runner.
+- `evaluation/evaluation_store.py`: optional Supabase persistence for offline evaluation runs.
 - `model/wsl_xg_model.py`: existing walk-forward backtest implementation reused as the prediction engine.
 - `evaluation/eval_store.py`: existing prediction-run audit logging, unchanged in this checkpoint.
 
@@ -31,12 +32,23 @@ Manual evaluation uses the existing Supabase data layer:
 python -m evaluation.run_evaluation --start-date 2025-10-01
 ```
 
+Persist an offline evaluation run:
+
+```bash
+python -m evaluation.run_evaluation \
+  --start-date 2025-10-01 \
+  --persist \
+  --run-trigger manual \
+  --code-version "$(git rev-parse --short HEAD)"
+```
+
 The runner:
 
 - Fetches match data through `data.supabase_client.fetch_match_data()` when no DataFrame is provided.
 - Supports local or mocked DataFrames in tests.
 - Calls the existing model `run_backtest()` function.
 - Returns a structured JSON-style result with parameters, aggregate metrics, model backtest metrics, and per-match results.
+- Writes to Supabase only when `--persist` or `persist=True` is explicitly used.
 
 ## Unit Testing
 
@@ -54,13 +66,26 @@ Covered test areas:
 
 ## Persistence
 
-Dedicated evaluation-run persistence is deferred. The existing `prediction_runs` audit table remains unchanged.
+Evaluation persistence writes to a dedicated `evaluation_runs` table. It does not overload or change the existing `prediction_runs` table.
 
-Recommended next persistence step:
+Create the table once with:
 
-- Add `evaluation_runs` as a separate table rather than overloading `prediction_runs`.
-- Store evaluation parameters, aggregate metrics, confidence buckets, calibration bins, per-match results, code/image version, and run trigger.
-- Keep prediction-run logging backward compatible.
+```bash
+scripts/setup_evaluation_runs_table.sql
+```
+
+Stored fields include:
+
+- Evaluation type and date window.
+- Model config and evaluation parameters.
+- Aggregate metrics.
+- Calibration bins.
+- Confidence buckets.
+- Per-match results.
+- Data snapshot metadata.
+- Run trigger, optional code version, and optional notes.
+
+Insert failures are logged and return an empty `run_id`, preserving JSON output for the manual evaluation run.
 
 ## Operational Use
 

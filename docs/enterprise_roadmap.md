@@ -22,6 +22,7 @@ Already present:
 - GitHub Actions CI baseline for linting, tests, security checks, and Docker build validation.
 - Blocking pip-audit dependency security gate.
 - Reusable evaluation metrics and walk-forward evaluation runner.
+- Dedicated `evaluation_runs` persistence path for offline evaluation results.
 - `.gitignore` coverage for `.env`, raw data folders, generated predictions, and CSV files.
 
 ## Priority Gaps
@@ -60,7 +61,6 @@ Already present:
 
 ### P2: Evaluation And Audit Trail
 
-- Add a dedicated `evaluation_runs` table for offline evaluation results.
 - Add model version metadata to prediction records.
 - Add code revision, image tag, and deployment environment to audit records.
 - Add scheduled prediction run metadata once scheduling exists.
