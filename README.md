@@ -21,8 +21,8 @@ Supabase (rpc_wsl_weekly_stats)
 ## Local Setup
 
 ```bash
-# 1. Clone and install
-pip install -r requirements.txt
+# 1. Install
+python -m pip install -r requirements.txt -r requirements-dev.txt -c constraints.txt
 
 # 2. Configure environment
 cp .env.example .env

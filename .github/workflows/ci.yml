@@ -26,11 +26,12 @@ jobs:
           cache-dependency-path: |
             requirements.txt
             requirements-dev.txt
+            constraints.txt
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt -r requirements-dev.txt
+          python -m pip install -r requirements.txt -r requirements-dev.txt -c constraints.txt
 
       - name: Ruff
         run: python -m ruff check .
@@ -43,10 +44,10 @@ jobs:
         run: python -m pytest tests/ -v
 
       - name: Bandit
-        run: python -m bandit -r api data evaluation -x tests,venv
+        run: python -m bandit -r api data evaluation model
 
       - name: Pip audit
-        run: python -m pip_audit -r requirements.txt -r requirements-dev.txt
+        run: python -m pip_audit
 
       - name: Docker build validation
         run: docker build -t wsl-prediction-engine:test .
