@@ -141,6 +141,39 @@ def flatten_prediction_runs(runs_by_week: dict[int, dict[str, Any]]) -> list[dic
     return rows
 
 
+def filter_predictions_to_expected_round(
+    prediction_rows: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    """Keep only Week N predictions whose round_label is R<N>."""
+    kept: list[dict[str, Any]] = []
+    excluded: list[dict[str, Any]] = []
+    excluded_by_week: dict[int, set[str]] = defaultdict(set)
+
+    for row in prediction_rows:
+        expected_round_label = f"R{row['week']}"
+        actual_round_label = str(row.get("round_label", ""))
+        if actual_round_label != expected_round_label:
+            excluded_row = {
+                **row,
+                "expected_round_label": expected_round_label,
+                "actual_round_label": actual_round_label,
+            }
+            excluded.append(excluded_row)
+            excluded_by_week[int(row["week"])].add(actual_round_label)
+            continue
+        kept.append(row)
+
+    warnings = [
+        {
+            "week": week,
+            "expected_round_label": f"R{week}",
+            "excluded_round_labels": sorted(labels),
+        }
+        for week, labels in sorted(excluded_by_week.items())
+    ]
+    return kept, excluded, warnings
+
+
 def prepare_actual_results(df: pd.DataFrame, *, start_week: int, end_week: int) -> list[dict[str, Any]]:
     required = {"match_date", "round_label", "home_team", "away_team", "home_goals", "away_goals"}
     missing = required - set(df.columns)
@@ -265,6 +298,9 @@ def build_logged_evaluation_result(
     )
     latest_runs, duplicate_warnings = select_latest_runs_by_week(replay_runs)
     prediction_rows = flatten_prediction_runs(latest_runs)
+    prediction_rows, excluded_round_mismatches, round_mismatch_warnings = filter_predictions_to_expected_round(
+        prediction_rows
+    )
     actual_rows = prepare_actual_results(actuals_df, start_week=start_week, end_week=end_week)
     matched_rows, unmatched_predictions, unmatched_actuals = match_predictions_to_actuals(prediction_rows, actual_rows)
     metrics, per_match_results = evaluate_matched_predictions(matched_rows, n_bins=n_bins)
@@ -272,6 +308,15 @@ def build_logged_evaluation_result(
     evaluated_weeks = sorted({row["week"] for row in per_match_results})
     expected_weeks = list(range(start_week, end_week + 1))
     missing_weeks = [week for week in expected_weeks if week not in latest_runs]
+    evaluated_fixture_count_by_week = {
+        week: sum(1 for row in per_match_results if row["week"] == week)
+        for week in expected_weeks
+    }
+    fixture_count_anomalies = [
+        {"week": week, "evaluated_fixture_count": count, "expected_fixture_count": 6}
+        for week, count in evaluated_fixture_count_by_week.items()
+        if count != 6
+    ]
     start_date = min(row["match_date"] for row in per_match_results)
     end_date = max(row["match_date"] for row in per_match_results)
     run_trigger_pattern = f"dashboard-season-{season}-week-XX"
@@ -292,15 +337,19 @@ def build_logged_evaluation_result(
         },
         "metrics": metrics,
         "per_match_results": per_match_results,
-        "warnings": duplicate_warnings,
+        "warnings": duplicate_warnings + round_mismatch_warnings,
         "data_snapshot": {
             "prediction_run_count": len(latest_runs),
             "raw_prediction_run_count": len(replay_runs),
             "evaluated_weeks": evaluated_weeks,
             "missing_weeks": missing_weeks,
+            "evaluated_fixture_count_by_week": evaluated_fixture_count_by_week,
+            "fixture_count_anomalies": fixture_count_anomalies,
+            "excluded_round_mismatches": excluded_round_mismatches,
             "unmatched_predictions": unmatched_predictions,
             "unmatched_actuals": unmatched_actuals,
             "duplicate_runs": duplicate_warnings,
+            "round_mismatch_warnings": round_mismatch_warnings,
         },
     }
 
@@ -326,6 +375,7 @@ def build_markdown_report(result: dict[str, Any]) -> str:
         f"- Log loss: {metrics['log_loss']:.6f}",
         f"- Accuracy: {metrics['accuracy']:.6f}",
         "- Week 1 is excluded because it requires historical priors or a previous-season baseline.",
+        "- Rescheduled/long-window rounds are filtered by official round_label before scoring.",
         "",
         "## Calibration",
         "",
@@ -339,6 +389,19 @@ def build_markdown_report(result: dict[str, Any]) -> str:
     lines.extend(_markdown_table(_report_rows(worst)))
     lines.extend(["", "## Duplicate Run Warnings", ""])
     lines.append(json.dumps(result.get("warnings", []), indent=2, sort_keys=True))
+    lines.extend(["", "## Evaluated Fixture Count By Week", ""])
+    lines.extend(
+        _markdown_table(
+            [
+                {"week": week, "evaluated_fixture_count": count}
+                for week, count in snapshot["evaluated_fixture_count_by_week"].items()
+            ]
+        )
+    )
+    lines.extend(["", "## Fixture Count Anomalies", ""])
+    lines.append(json.dumps(snapshot["fixture_count_anomalies"], indent=2, sort_keys=True))
+    lines.extend(["", "## Excluded Round-Label Mismatches", ""])
+    lines.append(json.dumps(snapshot["excluded_round_mismatches"], indent=2, sort_keys=True))
     lines.extend(["", "## Unmatched Predictions", ""])
     lines.append(json.dumps(snapshot["unmatched_predictions"], indent=2, sort_keys=True))
     lines.extend(["", "## Unmatched Actuals", ""])

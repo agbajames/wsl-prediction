@@ -11,6 +11,7 @@ from evaluation.evaluate_logged_predictions import (
     build_logged_evaluation_result,
     build_markdown_report,
     filter_dashboard_replay_runs,
+    filter_predictions_to_expected_round,
     flatten_prediction_runs,
     match_predictions_to_actuals,
     parse_dashboard_week,
@@ -152,6 +153,70 @@ def test_flatten_stored_prediction_payloads(prediction_runs):
     assert rows[0]["run_id"] == "run-w2-new"
 
 
+def test_week_16_payload_with_r16_and_r20_only_evaluates_r16():
+    runs = [
+        _prediction_run(
+            run_id="run-w16",
+            week=16,
+            created_at="2026-03-01T10:00:00Z",
+            predictions=[
+                _prediction("2026-02-13", "R16", "Arsenal", "Chelsea", 70.0, 20.0, 10.0),
+                _prediction("2026-05-09", "R20", "Spurs", "Liverpool", 20.0, 20.0, 60.0),
+            ],
+        )
+    ]
+    actuals = pd.DataFrame(
+        [
+            {
+                "match_date": "2026-02-13",
+                "round_label": "R16",
+                "home_team": "Arsenal",
+                "away_team": "Chelsea",
+                "home_goals": 2,
+                "away_goals": 0,
+            },
+            {
+                "match_date": "2026-05-09",
+                "round_label": "R20",
+                "home_team": "Spurs",
+                "away_team": "Liverpool",
+                "home_goals": 0,
+                "away_goals": 1,
+            },
+        ]
+    )
+
+    result = build_logged_evaluation_result(
+        season="2025-26",
+        start_week=16,
+        end_week=16,
+        prediction_runs=runs,
+        actuals_df=actuals,
+    )
+
+    assert result["metrics"]["n_matches"] == 1
+    assert result["per_match_results"][0]["round_label"] == "R16"
+    assert result["data_snapshot"]["excluded_round_mismatches"][0]["actual_round_label"] == "R20"
+    assert result["data_snapshot"]["round_mismatch_warnings"] == [
+        {"week": 16, "expected_round_label": "R16", "excluded_round_labels": ["R20"]}
+    ]
+
+
+def test_filter_predictions_to_expected_round_reports_excluded_rows():
+    rows = [
+        {"week": 16, "round_label": "R16", "home_team": "A", "away_team": "B"},
+        {"week": 16, "round_label": "R20", "home_team": "C", "away_team": "D"},
+    ]
+
+    kept, excluded, warnings = filter_predictions_to_expected_round(rows)
+
+    assert len(kept) == 1
+    assert kept[0]["round_label"] == "R16"
+    assert excluded[0]["expected_round_label"] == "R16"
+    assert excluded[0]["actual_round_label"] == "R20"
+    assert warnings == [{"week": 16, "expected_round_label": "R16", "excluded_round_labels": ["R20"]}]
+
+
 def test_matching_predictions_to_actual_results(prediction_runs, actuals_df):
     selected = filter_dashboard_replay_runs(prediction_runs, season="2025-26", start_week=2, end_week=3)
     latest, _ = select_latest_runs_by_week(selected)
@@ -164,6 +229,40 @@ def test_matching_predictions_to_actual_results(prediction_runs, actuals_df):
     assert unmatched_predictions == []
     assert len(unmatched_actuals) == 1
     assert unmatched_actuals[0]["home_team"] == "Brighton"
+
+
+def test_no_cross_round_actual_matching_is_allowed():
+    prediction_rows = [
+        {
+            "week": 16,
+            "run_id": "run-w16",
+            "match_date": "2026-05-09",
+            "round_label": "R16",
+            "home_team": "Spurs",
+            "away_team": "Liverpool",
+            "p_home_win": 0.2,
+            "p_draw": 0.2,
+            "p_away_win": 0.6,
+        }
+    ]
+    actual_rows = [
+        {
+            "week": 20,
+            "match_date": "2026-05-09",
+            "round_label": "R20",
+            "home_team": "Spurs",
+            "away_team": "Liverpool",
+            "home_goals": 0,
+            "away_goals": 1,
+            "outcome": "A",
+        }
+    ]
+
+    matched, unmatched_predictions, unmatched_actuals = match_predictions_to_actuals(prediction_rows, actual_rows)
+
+    assert matched == []
+    assert unmatched_predictions == prediction_rows
+    assert unmatched_actuals == actual_rows
 
 
 def test_calculating_metrics_on_logged_predictions(prediction_runs, actuals_df):
@@ -225,6 +324,54 @@ def test_full_week_2_to_22_target_metadata(prediction_runs, actuals_df):
     assert result["parameters"]["end_week"] == 22
     assert 4 in result["data_snapshot"]["missing_weeks"]
     assert 22 in result["data_snapshot"]["missing_weeks"]
+    assert result["data_snapshot"]["evaluated_fixture_count_by_week"][2] == 2
+    assert result["data_snapshot"]["fixture_count_anomalies"][0] == {
+        "week": 2,
+        "evaluated_fixture_count": 2,
+        "expected_fixture_count": 6,
+    }
+
+
+def test_full_week_2_to_22_evaluates_126_round_strict_fixtures():
+    runs = []
+    actual_rows = []
+    for week in range(2, 23):
+        predictions = []
+        for fixture_idx in range(6):
+            match_date = f"2026-01-{week:02d}"
+            home = f"Home {week}-{fixture_idx}"
+            away = f"Away {week}-{fixture_idx}"
+            predictions.append(_prediction(match_date, f"R{week}", home, away, 70.0, 20.0, 10.0))
+            actual_rows.append(
+                {
+                    "match_date": match_date,
+                    "round_label": f"R{week}",
+                    "home_team": home,
+                    "away_team": away,
+                    "home_goals": 2,
+                    "away_goals": 0,
+                }
+            )
+        runs.append(
+            _prediction_run(
+                run_id=f"run-w{week}",
+                week=week,
+                created_at=f"2026-02-{week:02d}T10:00:00Z",
+                predictions=predictions,
+            )
+        )
+
+    result = build_logged_evaluation_result(
+        season="2025-26",
+        start_week=2,
+        end_week=22,
+        prediction_runs=runs,
+        actuals_df=pd.DataFrame(actual_rows),
+    )
+
+    assert result["metrics"]["n_matches"] == 126
+    assert result["data_snapshot"]["fixture_count_anomalies"] == []
+    assert all(count == 6 for count in result["data_snapshot"]["evaluated_fixture_count_by_week"].values())
 
 
 def test_persistence_payload_shape_for_evaluation_runs(prediction_runs, actuals_df):
