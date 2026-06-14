@@ -91,9 +91,12 @@ The logged evaluator:
 
 - Selects dashboard runs matching `dashboard-season-2025-26-week-XX`.
 - Uses the latest `prediction_runs` row per matchweek when duplicates exist.
+- Filters each Week N prediction payload to `round_label == R<N>` before scoring.
 - Joins stored prediction payloads to completed actual results from `rpc_wsl_weekly_stats()`.
 - Reports unmatched predictions and unmatched actuals rather than silently dropping them.
 - Produces Brier score, log loss, accuracy, calibration bins, confidence bucket performance, best predictions, and worst misses.
+
+Strict round-label filtering is required because some verified replay date windows include postponed or rescheduled fixtures from other rounds. For example, a long Week 16 date window can contain R20, R21, or R14 fixtures. Logged replay evaluation therefore treats the dashboard run trigger as the intended week and excludes any stored prediction rows whose `round_label` does not match that week. Excluded rows are reported in `data_snapshot.excluded_round_mismatches` and in the Markdown report.
 
 This is the primary evaluation method for interview evidence from the replay workflow.
 
