@@ -1,0 +1,8 @@
+# Development and CI dependencies for Python 3.11.
+
+pytest
+pytest-cov
+httpx
+ruff
+bandit
+pip-audit

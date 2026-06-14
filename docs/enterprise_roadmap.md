@@ -14,16 +14,19 @@ Already present:
 - Supabase audit table script for prediction runs.
 - Dockerfile targeting Python 3.11.
 - Azure Container Apps Bicep infrastructure with Key Vault and Application Insights resources.
-- Unit tests for schema, model invariants, and health endpoint behavior.
+- Unit tests for schema validation, model invariants, API auth failures, and mocked API smoke paths.
+- Python 3.11 development dependency baseline in `requirements-dev.txt`.
+- Pytest and Ruff configuration in `pyproject.toml`.
+- GitHub Actions CI baseline for linting, tests, security checks, and Docker build validation.
 - `.gitignore` coverage for `.env`, raw data folders, generated predictions, and CSV files.
 
 ## Priority Gaps
 
 ### P0: Baseline Safety And Reproducibility
 
-- Add CI workflow for tests, linting, dependency installation, Docker build validation, and secret scanning.
-- Add an explicit Python version file or project metadata so local, CI, and Docker all agree on Python 3.11.
-- Add a pinned development/test dependency set. `pytest` is required by the tests but is not listed in `requirements.txt`.
+- Add secret scanning to CI.
+- Add an explicit Python version file so local shells, CI, and Docker all agree on Python 3.11.
+- Pin development/test dependency versions once the baseline package set stabilizes.
 - Add a pre-commit or documented local quality gate for formatting, linting, and secret detection.
 - Verify `.env` and private data files are untracked before every release.
 
@@ -62,10 +65,9 @@ Already present:
 
 ### P2: Test Coverage
 
-- Expand API tests for authenticated and unauthenticated requests.
-- Test `/predict`, `/strengths`, `/backtest`, and `/history` with mocked Supabase responses.
+- Add API tests for `/strengths`, `/history`, readiness behavior, and validation edge cases.
 - Add regression fixtures for representative WSL data without private exports.
-- Add Docker smoke tests.
+- Add Docker runtime smoke tests against `/health`.
 - Add Bicep validation in CI.
 
 ### P3: Operational Maturity
