@@ -9,7 +9,7 @@ This project targets Python 3.11 and keeps unit tests independent from live Supa
 Install runtime and development dependencies:
 
 ```bash
-python3.11 -m pip install -r requirements.txt -r requirements-dev.txt
+python -m pip install -r requirements.txt -r requirements-dev.txt -c constraints.txt
 ```
 
 Run the unit test suite:
@@ -59,7 +59,7 @@ The GitHub Actions workflow runs on pull requests and pushes to `main`.
 
 It performs:
 
-- Python 3.11 dependency installation.
+- Python 3.11 dependency installation with `constraints.txt`.
 - Ruff linting.
 - Pytest.
 - Bandit security scanning for application modules.
@@ -68,7 +68,7 @@ It performs:
 
 The CI workflow uses placeholder environment variables for tests and does not print or require real secrets.
 
-The pip audit step is blocking. The FastAPI/Starlette pins are selected so the current dependency graph clears known `pip-audit` findings on Python 3.11.
+The pip audit step is blocking. CI audits the installed environment after constrained dependency installation.
 
 ## Future Additions
 
@@ -77,4 +77,4 @@ The pip audit step is blocking. The FastAPI/Starlette pins are selected so the c
 - Add Bicep validation.
 - Add Docker runtime smoke tests against `/health`.
 - Add API tests for `/strengths`, `/history`, and validation edge cases.
-- Add dependency lockfile or constraints generation if releases need byte-for-byte reproducibility.
+- Add hash-based dependency locking if releases need byte-for-byte reproducibility.

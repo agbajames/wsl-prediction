@@ -16,6 +16,8 @@ Already present:
 - Azure Container Apps Bicep infrastructure with Key Vault and Application Insights resources.
 - Unit tests for schema validation, model invariants, API auth failures, and mocked API smoke paths.
 - Python 3.11 development dependency baseline in `requirements-dev.txt`.
+- Python 3.11 marker in `.python-version`.
+- Resolved dependency constraints in `constraints.txt`.
 - Pytest and Ruff configuration in `pyproject.toml`.
 - GitHub Actions CI baseline for linting, tests, security checks, and Docker build validation.
 - Blocking pip-audit dependency security gate.
@@ -26,8 +28,7 @@ Already present:
 ### P0: Baseline Safety And Reproducibility
 
 - Add secret scanning to CI.
-- Add an explicit Python version file so local shells, CI, and Docker all agree on Python 3.11.
-- Add dependency lockfile or constraints generation once the baseline package set stabilizes.
+- Add hash-based dependency locking if release reproducibility requires byte-for-byte package verification.
 - Add a pre-commit or documented local quality gate for formatting, linting, and secret detection.
 - Verify `.env` and private data files are untracked before every release.
 
