@@ -86,7 +86,7 @@ To replay week by week:
 4. Confirm the dashboard status labels before generating predictions.
 5. Click **Generate Predictions** for Matchweeks 2 through 22 in order.
 6. Confirm each generated prediction creates a `prediction_runs` record by refreshing prediction history.
-7. Run evaluation after predictions are logged.
+7. Run logged prediction evaluation from the CLI after predictions are logged.
 
 Rounds R3, R14, R16, R20, and R21 contain postponed/rescheduled fixtures with long date spans. They are not split in the dashboard manifest yet, so replay and evaluation numbers for those rounds should be interpreted carefully.
 
@@ -134,22 +134,29 @@ The main history table is flattened so nested prediction payloads do not render 
 
 - `prediction_runs` records generated prediction windows and prediction payloads from FastAPI.
 - `evaluation_runs` records offline evaluation/backtest results when the evaluation runner is executed with `--persist`.
+- Logged replay evaluation reads `prediction_runs` and writes one aggregate `evaluation_runs` record when `--persist` is passed.
 
 ## Evaluation Workflow
 
-The baseline evaluation panel shows local commands for the selected matchweek:
+The baseline evaluation panel shows local commands for evaluating logged dashboard predictions for the selected matchweek:
 
 ```bash
-python -m evaluation.run_evaluation --start-date 2025-10-03 --run-trigger dashboard-season-2025-26-week-05-evaluation
+python -m evaluation.evaluate_logged_predictions --season 2025-26 --week 5 --run-trigger logged-replay-2025-26-week-05
 ```
 
 If the `evaluation_runs` table is configured, the analyst can persist the result:
 
 ```bash
-python -m evaluation.run_evaluation --start-date 2025-10-03 --run-trigger dashboard-season-2025-26-week-05-evaluation --persist
+python -m evaluation.evaluate_logged_predictions --season 2025-26 --week 5 --run-trigger logged-replay-2025-26-week-05 --persist
 ```
 
-The current runner may evaluate from the selected start date onward unless a tighter matchweek-only window is implemented later. Automated evaluation execution from Streamlit is deferred so this checkpoint does not add new local process execution behaviour to the dashboard.
+Full replay evaluation should be run from the CLI:
+
+```bash
+python -m evaluation.evaluate_logged_predictions --season 2025-26 --start-week 2 --end-week 22 --persist --run-trigger logged-replay-2025-26-weeks-02-22
+```
+
+Automated evaluation execution from Streamlit is deferred so this checkpoint does not add new local process execution behaviour to the dashboard. A later dashboard branch can read `evaluation_runs` and display evaluated status/metrics.
 
 ## Current Limitations
 
