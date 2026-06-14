@@ -1,6 +1,6 @@
 # Testing Strategy
 
-Last updated: 2026-06-13
+Last updated: 2026-06-14
 
 This project targets Python 3.11 and keeps unit tests independent from live Supabase credentials.
 
@@ -63,12 +63,12 @@ It performs:
 - Ruff linting.
 - Pytest.
 - Bandit security scanning for application modules.
-- Advisory pip dependency audit.
+- Blocking pip dependency audit.
 - Docker build validation.
 
 The CI workflow uses placeholder environment variables for tests and does not print or require real secrets.
 
-The pip audit step is advisory in this baseline because current pinned dependencies may need a separate compatibility review before security upgrades are applied.
+The pip audit step is blocking. The FastAPI/Starlette pins are selected so the current dependency graph clears known `pip-audit` findings on Python 3.11.
 
 ## Future Additions
 
@@ -77,3 +77,4 @@ The pip audit step is advisory in this baseline because current pinned dependenc
 - Add Bicep validation.
 - Add Docker runtime smoke tests against `/health`.
 - Add API tests for `/strengths`, `/history`, and validation edge cases.
+- Add dependency lockfile or constraints generation if releases need byte-for-byte reproducibility.
