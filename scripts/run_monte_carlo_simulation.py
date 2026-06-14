@@ -127,8 +127,11 @@ def build_remaining_fixtures_from_model(
 
 
 def run_from_dataframe(args: argparse.Namespace, df: pd.DataFrame) -> dict[str, Any]:
+    _progress("Building table after cutoff week")
     season_df = filter_season(df, args.season)
     starting_table = build_table_from_results(season_df, args.cutoff_week)
+
+    _progress("Preparing remaining fixtures")
     remaining_fixtures = build_remaining_fixtures_from_model(
         season_df,
         cutoff_week=args.cutoff_week,
@@ -136,6 +139,8 @@ def run_from_dataframe(args: argparse.Namespace, df: pd.DataFrame) -> dict[str, 
         remaining_end_week=args.remaining_end_week,
         fit_rho_each_run=args.fit_rho,
     )
+
+    _progress(f"Running {args.simulations} simulations")
     simulation_result = run_monte_carlo(
         starting_table,
         remaining_fixtures,
@@ -144,6 +149,7 @@ def run_from_dataframe(args: argparse.Namespace, df: pd.DataFrame) -> dict[str, 
     )
 
     if args.output:
+        _progress("Writing report")
         report = build_markdown_report(
             season=args.season,
             cutoff_week=args.cutoff_week,
@@ -163,10 +169,16 @@ def run_from_dataframe(args: argparse.Namespace, df: pd.DataFrame) -> dict[str, 
     }
 
 
+def _progress(message: str) -> None:
+    print(message, file=sys.stderr, flush=True)
+
+
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    _progress("Loading data")
     df = fetch_match_data()
     result = run_from_dataframe(args, df)
+    _progress("Done")
     print(json.dumps(result, indent=2))
     return 0
 

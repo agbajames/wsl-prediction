@@ -6,7 +6,6 @@ Poisson scoreline-based WSL season Monte Carlo simulation.
 
 from __future__ import annotations
 
-from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any
 
@@ -25,6 +24,8 @@ class SimFixture:
 
 
 TABLE_COLUMNS = ["team", "played", "wins", "draws", "losses", "gf", "ga", "gd", "points"]
+STATE_COLUMNS = ["played", "wins", "draws", "losses", "gf", "ga", "points"]
+PLAYED, WINS, DRAWS, LOSSES, GF, GA, POINTS = range(len(STATE_COLUMNS))
 
 
 def week_from_round_label(round_label: Any) -> int | None:
@@ -127,7 +128,12 @@ def rank_table(table: pd.DataFrame) -> pd.DataFrame:
 
 
 def sample_scoreline(lambda_home: float, lambda_away: float, rng: np.random.Generator) -> tuple[int, int]:
-    if not np.isfinite(lambda_home) or not np.isfinite(lambda_away) or lambda_home < 0 or lambda_away < 0:
+    if (
+        not np.isfinite(lambda_home)
+        or not np.isfinite(lambda_away)
+        or lambda_home < 0
+        or lambda_away < 0
+    ):
         raise ValueError("Expected-goals lambdas must be finite and non-negative.")
     return int(rng.poisson(lambda_home)), int(rng.poisson(lambda_away))
 
@@ -137,11 +143,14 @@ def simulate_remaining_fixtures(
     fixtures: list[SimFixture],
     rng: np.random.Generator,
 ) -> pd.DataFrame:
-    table = starting_table.drop(columns=["rank"], errors="ignore").copy()
-    for fixture in fixtures:
-        home_goals, away_goals = sample_scoreline(fixture.lambda_home, fixture.lambda_away, rng)
-        table = apply_result(table, fixture.home_team, fixture.away_team, home_goals, away_goals)
-    return rank_table(table)
+    teams = _simulation_teams(starting_table, fixtures)
+    team_to_idx = {team: idx for idx, team in enumerate(teams)}
+    state = _table_to_state(starting_table, teams)
+    home_indices, away_indices, lambda_home, lambda_away = _fixture_arrays(fixtures, team_to_idx)
+    home_goals = rng.poisson(lambda_home).astype(np.int64)
+    away_goals = rng.poisson(lambda_away).astype(np.int64)
+    _apply_fixture_arrays(state, home_indices, away_indices, home_goals, away_goals)
+    return _state_to_ranked_table(teams, state)
 
 
 def run_monte_carlo(
@@ -155,50 +164,55 @@ def run_monte_carlo(
         raise ValueError("simulations must be positive.")
 
     rng = np.random.default_rng(random_seed)
-    teams = sorted(
-        set(starting_table["team"])
-        .union({fixture.home_team for fixture in fixtures})
-        .union({fixture.away_team for fixture in fixtures})
-    )
-    accum = {
-        team: {
-            "titles": 0,
-            "top3": 0,
-            "top4": 0,
-            "points": [],
-            "gd": [],
-            "rank": [],
-            "rank_distribution": defaultdict(int),
-        }
-        for team in teams
-    }
+    teams = _simulation_teams(starting_table, fixtures)
+    team_to_idx = {team: idx for idx, team in enumerate(teams)}
+    base_state = _table_to_state(starting_table, teams)
+    home_indices, away_indices, lambda_home, lambda_away = _fixture_arrays(fixtures, team_to_idx)
+
+    n_teams = len(teams)
+    titles = np.zeros(n_teams, dtype=np.int64)
+    top3 = np.zeros(n_teams, dtype=np.int64)
+    top4 = np.zeros(n_teams, dtype=np.int64)
+    points_sum = np.zeros(n_teams, dtype=np.float64)
+    gd_sum = np.zeros(n_teams, dtype=np.float64)
+    rank_sum = np.zeros(n_teams, dtype=np.float64)
+    rank_counts = np.zeros((n_teams, n_teams), dtype=np.int64)
 
     for _ in range(simulations):
-        final_table = simulate_remaining_fixtures(starting_table, fixtures, rng)
-        for row in final_table.to_dict(orient="records"):
-            team = row["team"]
-            rank = int(row["rank"])
-            accum[team]["titles"] += int(rank == 1)
-            accum[team]["top3"] += int(rank <= 3)
-            accum[team]["top4"] += int(rank <= 4)
-            accum[team]["points"].append(float(row["points"]))
-            accum[team]["gd"].append(float(row["gd"]))
-            accum[team]["rank"].append(float(rank))
-            accum[team]["rank_distribution"][rank] += 1
+        state = base_state.copy()
+        home_goals = rng.poisson(lambda_home).astype(np.int64)
+        away_goals = rng.poisson(lambda_away).astype(np.int64)
+        _apply_fixture_arrays(state, home_indices, away_indices, home_goals, away_goals)
+
+        gd = state[:, GF] - state[:, GA]
+        ranked_indices = _rank_indices(teams, state, gd)
+        ranks = np.empty(n_teams, dtype=np.int64)
+        ranks[ranked_indices] = np.arange(1, n_teams + 1)
+
+        titles += ranks == 1
+        top3 += ranks <= 3
+        top4 += ranks <= 4
+        points_sum += state[:, POINTS]
+        gd_sum += gd
+        rank_sum += ranks
+        rank_counts[np.arange(n_teams), ranks - 1] += 1
 
     summary = []
-    for team in teams:
-        team_data = accum[team]
+    for idx, team in enumerate(teams):
         summary.append(
             {
                 "team": team,
-                "title_probability": team_data["titles"] / simulations,
-                "top3_probability": team_data["top3"] / simulations,
-                "top4_probability": team_data["top4"] / simulations,
-                "average_final_points": float(np.mean(team_data["points"])),
-                "average_final_goal_difference": float(np.mean(team_data["gd"])),
-                "average_rank": float(np.mean(team_data["rank"])),
-                "rank_distribution": dict(sorted(team_data["rank_distribution"].items())),
+                "title_probability": float(titles[idx] / simulations),
+                "top3_probability": float(top3[idx] / simulations),
+                "top4_probability": float(top4[idx] / simulations),
+                "average_final_points": float(points_sum[idx] / simulations),
+                "average_final_goal_difference": float(gd_sum[idx] / simulations),
+                "average_rank": float(rank_sum[idx] / simulations),
+                "rank_distribution": {
+                    rank: int(count)
+                    for rank, count in enumerate(rank_counts[idx], start=1)
+                    if count
+                },
             }
         )
 
@@ -212,6 +226,102 @@ def run_monte_carlo(
         "remaining_fixture_count": len(fixtures),
         "summary": summary,
     }
+
+
+def _simulation_teams(starting_table: pd.DataFrame, fixtures: list[SimFixture]) -> list[str]:
+    return sorted(
+        set(starting_table["team"])
+        .union({fixture.home_team for fixture in fixtures})
+        .union({fixture.away_team for fixture in fixtures})
+    )
+
+
+def _table_to_state(table: pd.DataFrame, teams: list[str]) -> np.ndarray:
+    work = table.drop(columns=["rank"], errors="ignore").copy()
+    work = work.set_index("team").reindex(teams, fill_value=0)
+    for column in STATE_COLUMNS:
+        if column not in work.columns:
+            work[column] = 0
+    return work[STATE_COLUMNS].to_numpy(dtype=np.int64)
+
+
+def _state_to_ranked_table(teams: list[str], state: np.ndarray) -> pd.DataFrame:
+    rows = []
+    for idx, team in enumerate(teams):
+        gf = int(state[idx, GF])
+        ga = int(state[idx, GA])
+        rows.append(
+            {
+                "team": team,
+                "played": int(state[idx, PLAYED]),
+                "wins": int(state[idx, WINS]),
+                "draws": int(state[idx, DRAWS]),
+                "losses": int(state[idx, LOSSES]),
+                "gf": gf,
+                "ga": ga,
+                "gd": gf - ga,
+                "points": int(state[idx, POINTS]),
+            }
+        )
+    return rank_table(pd.DataFrame(rows, columns=TABLE_COLUMNS))
+
+
+def _fixture_arrays(
+    fixtures: list[SimFixture],
+    team_to_idx: dict[str, int],
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    home_indices = np.array([team_to_idx[fixture.home_team] for fixture in fixtures], dtype=np.int64)
+    away_indices = np.array([team_to_idx[fixture.away_team] for fixture in fixtures], dtype=np.int64)
+    lambda_home = np.array([fixture.lambda_home for fixture in fixtures], dtype=np.float64)
+    lambda_away = np.array([fixture.lambda_away for fixture in fixtures], dtype=np.float64)
+
+    if np.any(~np.isfinite(lambda_home)) or np.any(~np.isfinite(lambda_away)):
+        raise ValueError("Expected-goals lambdas must be finite and non-negative.")
+    if np.any(lambda_home < 0) or np.any(lambda_away < 0):
+        raise ValueError("Expected-goals lambdas must be finite and non-negative.")
+
+    return home_indices, away_indices, lambda_home, lambda_away
+
+
+def _apply_fixture_arrays(
+    state: np.ndarray,
+    home_indices: np.ndarray,
+    away_indices: np.ndarray,
+    home_goals: np.ndarray,
+    away_goals: np.ndarray,
+) -> None:
+    for idx, home_idx in enumerate(home_indices):
+        away_idx = away_indices[idx]
+        hg = int(home_goals[idx])
+        ag = int(away_goals[idx])
+
+        state[home_idx, PLAYED] += 1
+        state[away_idx, PLAYED] += 1
+        state[home_idx, GF] += hg
+        state[home_idx, GA] += ag
+        state[away_idx, GF] += ag
+        state[away_idx, GA] += hg
+
+        if hg > ag:
+            state[home_idx, WINS] += 1
+            state[home_idx, POINTS] += 3
+            state[away_idx, LOSSES] += 1
+        elif hg < ag:
+            state[away_idx, WINS] += 1
+            state[away_idx, POINTS] += 3
+            state[home_idx, LOSSES] += 1
+        else:
+            state[home_idx, DRAWS] += 1
+            state[away_idx, DRAWS] += 1
+            state[home_idx, POINTS] += 1
+            state[away_idx, POINTS] += 1
+
+
+def _rank_indices(teams: list[str], state: np.ndarray, gd: np.ndarray) -> list[int]:
+    return sorted(
+        range(len(teams)),
+        key=lambda idx: (-state[idx, POINTS], -gd[idx], -state[idx, GF], teams[idx]),
+    )
 
 
 def build_markdown_report(
