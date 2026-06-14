@@ -8,6 +8,7 @@ The evaluation baseline makes the WSL Prediction Engine measurable without chang
 
 - `evaluation/metrics.py`: reusable three-way football prediction metrics.
 - `evaluation/run_evaluation.py`: repeatable walk-forward evaluation runner.
+- `evaluation/evaluate_logged_predictions.py`: evaluates prediction runs already logged from the dashboard replay.
 - `evaluation/evaluation_store.py`: optional Supabase persistence for offline evaluation runs.
 - `model/wsl_xg_model.py`: existing walk-forward backtest implementation reused as the prediction engine.
 - `evaluation/eval_store.py`: existing prediction-run audit logging, unchanged in this checkpoint.
@@ -26,7 +27,7 @@ Probability rows are validated before scoring. Invalid inputs such as negative p
 
 ## Runner
 
-Manual evaluation uses the existing Supabase data layer:
+Manual walk-forward evaluation uses the existing Supabase data layer and re-runs the model:
 
 ```bash
 python -m evaluation.run_evaluation --start-date 2025-10-01
@@ -49,6 +50,52 @@ The runner:
 - Calls the existing model `run_backtest()` function.
 - Returns a structured JSON-style result with parameters, aggregate metrics, model backtest metrics, and per-match results.
 - Writes to Supabase only when `--persist` or `persist=True` is explicitly used.
+
+## Logged Prediction Evaluation
+
+For the dashboard replay, logged prediction evaluation is the correct evidence path because the predictions were already generated and stored in `prediction_runs`. It evaluates exactly what the dashboard produced instead of re-running the model with potentially different data or parameters.
+
+Evaluate the full Week 2-22 replay:
+
+```bash
+python -m evaluation.evaluate_logged_predictions \
+  --season 2025-26 \
+  --start-week 2 \
+  --end-week 22
+```
+
+Persist the result to `evaluation_runs`:
+
+```bash
+python -m evaluation.evaluate_logged_predictions \
+  --season 2025-26 \
+  --start-week 2 \
+  --end-week 22 \
+  --persist \
+  --run-trigger logged-replay-2025-26-weeks-02-22
+```
+
+Generate an interview-ready Markdown report:
+
+```bash
+python -m evaluation.evaluate_logged_predictions \
+  --season 2025-26 \
+  --start-week 2 \
+  --end-week 22 \
+  --persist \
+  --run-trigger logged-replay-2025-26-weeks-02-22 \
+  --output reports/logged_replay_evaluation_2025_26.md
+```
+
+The logged evaluator:
+
+- Selects dashboard runs matching `dashboard-season-2025-26-week-XX`.
+- Uses the latest `prediction_runs` row per matchweek when duplicates exist.
+- Joins stored prediction payloads to completed actual results from `rpc_wsl_weekly_stats()`.
+- Reports unmatched predictions and unmatched actuals rather than silently dropping them.
+- Produces Brier score, log loss, accuracy, calibration bins, confidence bucket performance, best predictions, and worst misses.
+
+This is the primary evaluation method for interview evidence from the replay workflow.
 
 ## Unit Testing
 
@@ -89,7 +136,7 @@ Insert failures are logged and return an empty `run_id`, preserving JSON output 
 
 ## Operational Use
 
-Use this evaluation runner before model or dependency changes that could affect predictions. Compare:
+Use the logged prediction evaluator after dashboard replay runs are logged. Use the walk-forward runner before model or dependency changes that could affect future predictions. Compare:
 
 - Number of matches evaluated.
 - Brier score.

@@ -93,12 +93,22 @@ curl -X POST http://localhost:8000/backtest \
 python -m evaluation.run_evaluation --start-date 2025-10-01
 ```
 
+Evaluate logged dashboard replay predictions without re-running the model:
+```bash
+python -m evaluation.evaluate_logged_predictions \
+  --season 2025-26 \
+  --start-week 2 \
+  --end-week 22
+```
+
 Persist an offline evaluation run to Supabase:
 ```bash
-python -m evaluation.run_evaluation \
-  --start-date 2025-10-01 \
+python -m evaluation.evaluate_logged_predictions \
+  --season 2025-26 \
+  --start-week 2 \
+  --end-week 22 \
   --persist \
-  --run-trigger manual
+  --run-trigger logged-replay-2025-26-weeks-02-22
 ```
 
 ### Prediction history
