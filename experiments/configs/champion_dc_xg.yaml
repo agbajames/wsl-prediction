@@ -1,0 +1,20 @@
+model_name: champion_dc_xg
+model_family: xg_dixon_coles_poisson
+model_version: v1
+required_input_schema: data.schemas.CHAMPION_REQUIRED_COLUMNS
+underlying_implementation: model.wsl_xg_model
+
+config:
+  alpha: 0.15
+  decay_half_life_days: 60.0
+  rho: -0.13
+  rho_behavior: fixed_default
+  rho_grid: [-0.30, 0.01, 0.01]
+  max_goals: 8
+  league_avg_goals: 2.6
+  home_advantage_prior: 0.25
+  penalty_shrinkage_n: 5.0
+  xg_pseudocount: 0.05
+  bootstrap_n: 0
+  bootstrap_behavior: disabled_by_default
+
