@@ -1,0 +1,23 @@
+model_name: regularised_team_strength
+model_family: regularised_attack_defence_poisson
+model_version: v1
+
+required_columns:
+  - match_date
+  - home_team
+  - away_team
+  - home_goals
+  - away_goals
+
+config:
+  strength_source: np_xg
+  shrinkage_matches: 6.0
+  max_goals: 8
+  min_rate: 0.05
+  max_rate: 5.0
+
+notes: >
+  Offline challenger model. It prefers non-penalty xG when available, falls
+  back to xG and then goals, estimates smoothed attack/defence ratios, and
+  converts expected goals into 1X2 probabilities with an independent Poisson
+  scoreline grid. It does not change production champion behaviour.
