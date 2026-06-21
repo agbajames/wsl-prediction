@@ -10,6 +10,7 @@ from models.base import EvaluationModel
 from models.baselines import EloBaseline, NaiveOutcomeRateBaseline
 from models.champion_dc_xg import ChampionDCXGModel
 from models.logistic import LogisticRegressionChallenger
+from models.poisson_regression import PoissonRegressionChallenger
 from models.team_strength import RegularisedTeamStrengthModel
 
 ModelConstructor = Callable[[], EvaluationModel]
@@ -20,6 +21,7 @@ MODEL_REGISTRY: dict[str, ModelConstructor] = {
     "elo_baseline": EloBaseline,
     "logistic_regression": LogisticRegressionChallenger,
     "regularised_team_strength": RegularisedTeamStrengthModel,
+    "poisson_regression": PoissonRegressionChallenger,
 }
 
 

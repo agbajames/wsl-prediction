@@ -1,0 +1,27 @@
+model_name: poisson_regression
+model_family: regularised_poisson_regression
+model_version: v1
+
+required_columns:
+  - match_date
+  - home_team
+  - away_team
+  - home_goals
+  - away_goals
+
+config:
+  target_source: goals
+  ridge_alpha: 1.0
+  learning_rate: 0.01
+  max_iter: 1000
+  tolerance: 1e-6
+  max_goals: 8
+  min_rate: 0.05
+  max_rate: 5.0
+
+notes: >
+  Offline challenger model. It fits separate ridge-regularised Poisson
+  regressions for home and away scoring rates from each training fold, handles
+  unseen teams with neutral effects, and converts expected goals into 1X2
+  probabilities with an independent Poisson scoreline grid. The default target
+  is goals because Poisson regression naturally models counts.

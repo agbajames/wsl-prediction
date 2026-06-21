@@ -28,6 +28,7 @@ DEFAULT_MODELS = (
     "elo_baseline",
     "logistic_regression",
     "regularised_team_strength",
+    "poisson_regression",
 )
 
 
