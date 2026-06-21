@@ -1,0 +1,32 @@
+model_name: improved_logistic_regression
+model_family: multinomial_logistic_regression_rich_form
+model_version: v1
+required_columns:
+  - match_date
+  - home_team
+  - away_team
+  - home_goals
+  - away_goals
+
+feature_groups:
+  base: existing season-to-date points/goals features
+  form: base plus recent rolling form features
+  xg: base plus season-to-date and recent xG features
+  opponent: base plus simple opponent-strength proxies
+  full: base plus form, xG and opponent features
+
+config:
+  min_training_matches: 10
+  regularization_c: 0.5
+  max_iter: 800
+  learning_rate: 0.08
+  l2_penalty: 0.2
+  solver: auto
+  feature_group: xg
+  recent_window: 4
+
+limitations: >
+  Offline Phase 8B challenger. Features are generated sequentially inside each
+  training fold so a match row only sees prior matches. The default xg feature
+  group is deliberately conservative after ablation showed the full feature set
+  was less stable on one WSL season of data.
