@@ -1,0 +1,27 @@
+model_name: random_forest
+model_family: conservative_random_forest
+model_version: v1
+required_columns:
+  - match_date
+  - home_team
+  - away_team
+  - home_goals
+  - away_goals
+
+config:
+  n_estimators: 50
+  max_depth: 3
+  min_samples_leaf: 5
+  max_features: sqrt
+  max_thresholds: 8
+  bootstrap_fraction: 0.85
+  class_prior_strength: 3.0
+  min_training_matches: 12
+  random_seed: 42
+  feature_group: xg
+  recent_window: 4
+
+notes: >
+  Offline Phase 8B tree-based challenger. It reuses the leakage-safe xG feature
+  group from improved_logistic_regression, uses deterministic shallow bagged
+  trees, and intentionally avoids broad hyperparameter search.
