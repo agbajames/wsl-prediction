@@ -22,6 +22,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from evaluation.backtesting import BacktestConfig, build_rolling_folds, config_to_dict, run_backtest_for_model
 from models.baselines import EloBaseline, NaiveOutcomeRateBaseline
 from models.champion_dc_xg import ChampionDCXGModel
+from models.logistic import LogisticRegressionChallenger
 
 
 def parse_args() -> argparse.Namespace:
@@ -30,7 +31,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--model",
         default="champion_dc_xg",
-        choices=["champion_dc_xg", "naive_outcome_rate", "elo_baseline"],
+        choices=["champion_dc_xg", "naive_outcome_rate", "elo_baseline", "logistic_regression"],
     )
     parser.add_argument("--test-start", required=True, help="First test-window date, YYYY-MM-DD.")
     parser.add_argument("--test-end", required=True, help="Final test-window date, YYYY-MM-DD.")
@@ -86,6 +87,8 @@ def _model_provider(model_name: str):
         return NaiveOutcomeRateBaseline
     if model_name == "elo_baseline":
         return EloBaseline
+    if model_name == "logistic_regression":
+        return LogisticRegressionChallenger
     raise ValueError(f"Unsupported model: {model_name}")
 
 

@@ -1,0 +1,36 @@
+model_name: logistic_regression
+model_family: multinomial_logistic_regression
+model_version: v1
+required_columns:
+  - match_date
+  - home_team
+  - away_team
+  - home_goals
+  - away_goals
+
+features:
+  - home_points_per_match
+  - away_points_per_match
+  - points_per_match_diff
+  - home_goals_for_per_match
+  - away_goals_for_per_match
+  - home_goals_against_per_match
+  - away_goals_against_per_match
+  - goal_diff_per_match_diff
+  - home_indicator
+
+config:
+  min_training_matches: 6
+  regularization_c: 1.0
+  max_iter: 500
+  learning_rate: 0.15
+  l2_penalty: 0.1
+  solver: auto
+
+limitations: >
+  First machine-learning challenger using simple team-form features from each
+  training fold. WSL samples are small, so the model falls back to a naive
+  outcome-rate baseline when there are too few matches or only one observed
+  outcome class. The auto solver uses scikit-learn if available and otherwise
+  uses the internal softmax solver.
+
