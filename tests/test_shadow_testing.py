@@ -12,6 +12,7 @@ import pytest
 
 from evaluation.shadow import (
     DEFAULT_SHADOW_MODELS,
+    current_git_sha,
     evaluate_shadow_predictions,
     generate_shadow_predictions,
     load_fixture_file,
@@ -104,6 +105,17 @@ def test_default_shadow_tracking_set_keeps_champion_reference() -> None:
 def test_shadow_model_name_validation_rejects_unknown_candidate() -> None:
     with pytest.raises(ValueError, match="Unknown model"):
         validate_shadow_model_names(("champion_dc_xg", "not_a_model"))
+
+
+def test_current_git_sha_reads_ref_without_subprocess(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    git_dir = tmp_path / ".git"
+    ref_dir = git_dir / "refs" / "heads"
+    ref_dir.mkdir(parents=True)
+    git_dir.joinpath("HEAD").write_text("ref: refs/heads/main\n", encoding="utf-8")
+    ref_dir.joinpath("main").write_text("abc123def456\n", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+
+    assert current_git_sha() == "abc123def456"
 
 
 def test_shadow_prediction_artifact_schema_and_timestamp(

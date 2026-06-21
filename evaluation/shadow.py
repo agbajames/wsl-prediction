@@ -9,7 +9,6 @@ prediction artefacts, and replay those artefacts after actual results arrive.
 from __future__ import annotations
 
 import json
-import subprocess
 from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any
@@ -272,17 +271,49 @@ def validate_shadow_prediction_frame(predictions: pd.DataFrame) -> None:
 
 
 def current_git_sha() -> str:
-    """Return the current Git SHA, or unknown when Git is unavailable."""
-    try:
-        result = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-    except (OSError, subprocess.CalledProcessError):
+    """Return the current Git SHA from repository metadata, or unknown."""
+    git_dir = _find_git_dir(Path.cwd()) or _find_git_dir(Path(__file__).resolve())
+    if git_dir is None:
         return "unknown"
-    return result.stdout.strip() or "unknown"
+    head_path = git_dir / "HEAD"
+    if not head_path.exists():
+        return "unknown"
+    head = head_path.read_text(encoding="utf-8").strip()
+    if not head:
+        return "unknown"
+    if not head.startswith("ref:"):
+        return head
+    ref = head.removeprefix("ref:").strip()
+    ref_path = git_dir / ref
+    if ref_path.exists():
+        return ref_path.read_text(encoding="utf-8").strip() or "unknown"
+    return _read_packed_ref(git_dir / "packed-refs", ref) or "unknown"
+
+
+def _find_git_dir(start: Path) -> Path | None:
+    current = start if start.is_dir() else start.parent
+    for directory in (current, *current.parents):
+        dot_git = directory / ".git"
+        if dot_git.is_dir():
+            return dot_git
+        if dot_git.is_file():
+            gitdir = dot_git.read_text(encoding="utf-8").strip()
+            if gitdir.startswith("gitdir:"):
+                path = Path(gitdir.removeprefix("gitdir:").strip())
+                return path if path.is_absolute() else (directory / path).resolve()
+    return None
+
+
+def _read_packed_ref(path: Path, ref: str) -> str | None:
+    if not path.exists():
+        return None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line or line.startswith(("#", "^")):
+            continue
+        sha, _, name = line.partition(" ")
+        if name == ref:
+            return sha
+    return None
 
 
 def _predict_base_models(
