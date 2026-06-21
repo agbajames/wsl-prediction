@@ -1,0 +1,474 @@
+{
+  "decision": {
+    "best_probability_quality_candidate": {
+      "accuracy": 0.6146788990825688,
+      "brier_score": 0.5027457241109727,
+      "log_loss": 0.8623096504823061,
+      "model_name": "dc_fit_rho_each_fold",
+      "n_matches": 109,
+      "note": "Best Phase 8A probability-quality candidate; fits rho inside each fold.",
+      "source_group": "dixon_coles_variants",
+      "source_report": "reports/dixon_coles_variants_first_run.json"
+    },
+    "most_balanced_champion_family_candidate": {
+      "accuracy": 0.6330275229357798,
+      "brier_score": 0.5038043461119377,
+      "log_loss": 0.8649044270342365,
+      "model_name": "txg_xg_pseudocount_010",
+      "n_matches": 109,
+      "note": "Most balanced champion-family candidate; improves Brier, log loss, and accuracy versus the original champion.",
+      "source_group": "time_decay_xg_variants",
+      "source_report": "reports/time_decay_xg_variants_first_run.json"
+    },
+    "next_phase": "Phase 8B - improved logistic regression and feature-based ML challengers",
+    "operational_reference": {
+      "accuracy": 0.6238532110091743,
+      "brier_score": 0.5052116241719459,
+      "log_loss": 0.8668995129359902,
+      "model_name": "champion_dc_xg",
+      "n_matches": 109,
+      "note": "Unchanged operational/reference model.",
+      "source_group": "standalone_and_baselines",
+      "source_report": "reports/poisson_regression_comparison_first_run.json"
+    },
+    "production_promotion": "none",
+    "strongest_standalone_challenger": {
+      "accuracy": 0.5963302752293578,
+      "brier_score": 0.5256032916893584,
+      "log_loss": 0.900115844731262,
+      "model_name": "regularised_team_strength",
+      "n_matches": 109,
+      "note": "Strongest standalone non-champion statistical challenger.",
+      "source_group": "standalone_and_baselines",
+      "source_report": "reports/poisson_regression_comparison_first_run.json"
+    }
+  },
+  "primary_models": [
+    {
+      "accuracy": 0.6146788990825688,
+      "brier_score": 0.5027457241109727,
+      "log_loss": 0.8623096504823061,
+      "model_name": "dc_fit_rho_each_fold",
+      "n_matches": 109,
+      "note": "Best Phase 8A probability-quality candidate; fits rho inside each fold.",
+      "source_group": "dixon_coles_variants",
+      "source_report": "reports/dixon_coles_variants_first_run.json"
+    },
+    {
+      "accuracy": 0.6330275229357798,
+      "brier_score": 0.5038043461119377,
+      "log_loss": 0.8649044270342365,
+      "model_name": "txg_xg_pseudocount_010",
+      "n_matches": 109,
+      "note": "Most balanced champion-family candidate; improves Brier, log loss, and accuracy versus the original champion.",
+      "source_group": "time_decay_xg_variants",
+      "source_report": "reports/time_decay_xg_variants_first_run.json"
+    },
+    {
+      "accuracy": 0.6238532110091743,
+      "brier_score": 0.5052116241719459,
+      "log_loss": 0.8668995129359902,
+      "model_name": "champion_dc_xg",
+      "n_matches": 109,
+      "note": "Unchanged operational/reference model.",
+      "source_group": "standalone_and_baselines",
+      "source_report": "reports/poisson_regression_comparison_first_run.json"
+    },
+    {
+      "accuracy": 0.5963302752293578,
+      "brier_score": 0.5256032916893584,
+      "log_loss": 0.900115844731262,
+      "model_name": "regularised_team_strength",
+      "n_matches": 109,
+      "note": "Strongest standalone non-champion statistical challenger.",
+      "source_group": "standalone_and_baselines",
+      "source_report": "reports/poisson_regression_comparison_first_run.json"
+    },
+    {
+      "accuracy": 0.5412844036697247,
+      "brier_score": 0.5584688322280069,
+      "log_loss": 0.9426256836167224,
+      "model_name": "poisson_regression",
+      "n_matches": 109,
+      "note": "Interpretable Poisson regression challenger; useful but below regularised team strength.",
+      "source_group": "standalone_and_baselines",
+      "source_report": "reports/poisson_regression_comparison_first_run.json"
+    },
+    {
+      "accuracy": 0.5779816513761468,
+      "brier_score": 0.5561781781310142,
+      "log_loss": 0.9559694660605309,
+      "model_name": "logistic_regression",
+      "n_matches": 109,
+      "note": "Existing feature-based ML baseline carried forward to Phase 8B.",
+      "source_group": "standalone_and_baselines",
+      "source_report": "reports/poisson_regression_comparison_first_run.json"
+    },
+    {
+      "accuracy": 0.5596330275229358,
+      "brier_score": 0.56759761937794,
+      "log_loss": 0.9596499446607842,
+      "model_name": "elo_baseline",
+      "n_matches": 109,
+      "note": "Simple rating baseline.",
+      "source_group": "standalone_and_baselines",
+      "source_report": "reports/poisson_regression_comparison_first_run.json"
+    },
+    {
+      "accuracy": 0.45871559633027525,
+      "brier_score": 0.6401285940947251,
+      "log_loss": 1.0575784983860914,
+      "model_name": "naive_outcome_rate",
+      "n_matches": 109,
+      "note": "Sanity-check baseline.",
+      "source_group": "standalone_and_baselines",
+      "source_report": "reports/poisson_regression_comparison_first_run.json"
+    }
+  ],
+  "rankings": {
+    "accuracy": [
+      {
+        "accuracy": 0.6330275229357798,
+        "brier_score": 0.5038043461119377,
+        "log_loss": 0.8649044270342365,
+        "model_name": "txg_xg_pseudocount_010",
+        "n_matches": 109,
+        "note": "Most balanced champion-family candidate; improves Brier, log loss, and accuracy versus the original champion.",
+        "source_group": "time_decay_xg_variants",
+        "source_report": "reports/time_decay_xg_variants_first_run.json"
+      },
+      {
+        "accuracy": 0.6238532110091743,
+        "brier_score": 0.5052116241719459,
+        "log_loss": 0.8668995129359902,
+        "model_name": "champion_dc_xg",
+        "n_matches": 109,
+        "note": "Unchanged operational/reference model.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.6146788990825688,
+        "brier_score": 0.5027457241109727,
+        "log_loss": 0.8623096504823061,
+        "model_name": "dc_fit_rho_each_fold",
+        "n_matches": 109,
+        "note": "Best Phase 8A probability-quality candidate; fits rho inside each fold.",
+        "source_group": "dixon_coles_variants",
+        "source_report": "reports/dixon_coles_variants_first_run.json"
+      },
+      {
+        "accuracy": 0.5963302752293578,
+        "brier_score": 0.5256032916893584,
+        "log_loss": 0.900115844731262,
+        "model_name": "regularised_team_strength",
+        "n_matches": 109,
+        "note": "Strongest standalone non-champion statistical challenger.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.5779816513761468,
+        "brier_score": 0.5561781781310142,
+        "log_loss": 0.9559694660605309,
+        "model_name": "logistic_regression",
+        "n_matches": 109,
+        "note": "Existing feature-based ML baseline carried forward to Phase 8B.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.5596330275229358,
+        "brier_score": 0.56759761937794,
+        "log_loss": 0.9596499446607842,
+        "model_name": "elo_baseline",
+        "n_matches": 109,
+        "note": "Simple rating baseline.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.5412844036697247,
+        "brier_score": 0.5584688322280069,
+        "log_loss": 0.9426256836167224,
+        "model_name": "poisson_regression",
+        "n_matches": 109,
+        "note": "Interpretable Poisson regression challenger; useful but below regularised team strength.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.45871559633027525,
+        "brier_score": 0.6401285940947251,
+        "log_loss": 1.0575784983860914,
+        "model_name": "naive_outcome_rate",
+        "n_matches": 109,
+        "note": "Sanity-check baseline.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      }
+    ],
+    "brier_score": [
+      {
+        "accuracy": 0.6146788990825688,
+        "brier_score": 0.5027457241109727,
+        "log_loss": 0.8623096504823061,
+        "model_name": "dc_fit_rho_each_fold",
+        "n_matches": 109,
+        "note": "Best Phase 8A probability-quality candidate; fits rho inside each fold.",
+        "source_group": "dixon_coles_variants",
+        "source_report": "reports/dixon_coles_variants_first_run.json"
+      },
+      {
+        "accuracy": 0.6330275229357798,
+        "brier_score": 0.5038043461119377,
+        "log_loss": 0.8649044270342365,
+        "model_name": "txg_xg_pseudocount_010",
+        "n_matches": 109,
+        "note": "Most balanced champion-family candidate; improves Brier, log loss, and accuracy versus the original champion.",
+        "source_group": "time_decay_xg_variants",
+        "source_report": "reports/time_decay_xg_variants_first_run.json"
+      },
+      {
+        "accuracy": 0.6238532110091743,
+        "brier_score": 0.5052116241719459,
+        "log_loss": 0.8668995129359902,
+        "model_name": "champion_dc_xg",
+        "n_matches": 109,
+        "note": "Unchanged operational/reference model.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.5963302752293578,
+        "brier_score": 0.5256032916893584,
+        "log_loss": 0.900115844731262,
+        "model_name": "regularised_team_strength",
+        "n_matches": 109,
+        "note": "Strongest standalone non-champion statistical challenger.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.5779816513761468,
+        "brier_score": 0.5561781781310142,
+        "log_loss": 0.9559694660605309,
+        "model_name": "logistic_regression",
+        "n_matches": 109,
+        "note": "Existing feature-based ML baseline carried forward to Phase 8B.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.5412844036697247,
+        "brier_score": 0.5584688322280069,
+        "log_loss": 0.9426256836167224,
+        "model_name": "poisson_regression",
+        "n_matches": 109,
+        "note": "Interpretable Poisson regression challenger; useful but below regularised team strength.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.5596330275229358,
+        "brier_score": 0.56759761937794,
+        "log_loss": 0.9596499446607842,
+        "model_name": "elo_baseline",
+        "n_matches": 109,
+        "note": "Simple rating baseline.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.45871559633027525,
+        "brier_score": 0.6401285940947251,
+        "log_loss": 1.0575784983860914,
+        "model_name": "naive_outcome_rate",
+        "n_matches": 109,
+        "note": "Sanity-check baseline.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      }
+    ],
+    "log_loss": [
+      {
+        "accuracy": 0.6146788990825688,
+        "brier_score": 0.5027457241109727,
+        "log_loss": 0.8623096504823061,
+        "model_name": "dc_fit_rho_each_fold",
+        "n_matches": 109,
+        "note": "Best Phase 8A probability-quality candidate; fits rho inside each fold.",
+        "source_group": "dixon_coles_variants",
+        "source_report": "reports/dixon_coles_variants_first_run.json"
+      },
+      {
+        "accuracy": 0.6330275229357798,
+        "brier_score": 0.5038043461119377,
+        "log_loss": 0.8649044270342365,
+        "model_name": "txg_xg_pseudocount_010",
+        "n_matches": 109,
+        "note": "Most balanced champion-family candidate; improves Brier, log loss, and accuracy versus the original champion.",
+        "source_group": "time_decay_xg_variants",
+        "source_report": "reports/time_decay_xg_variants_first_run.json"
+      },
+      {
+        "accuracy": 0.6238532110091743,
+        "brier_score": 0.5052116241719459,
+        "log_loss": 0.8668995129359902,
+        "model_name": "champion_dc_xg",
+        "n_matches": 109,
+        "note": "Unchanged operational/reference model.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.5963302752293578,
+        "brier_score": 0.5256032916893584,
+        "log_loss": 0.900115844731262,
+        "model_name": "regularised_team_strength",
+        "n_matches": 109,
+        "note": "Strongest standalone non-champion statistical challenger.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.5412844036697247,
+        "brier_score": 0.5584688322280069,
+        "log_loss": 0.9426256836167224,
+        "model_name": "poisson_regression",
+        "n_matches": 109,
+        "note": "Interpretable Poisson regression challenger; useful but below regularised team strength.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.5779816513761468,
+        "brier_score": 0.5561781781310142,
+        "log_loss": 0.9559694660605309,
+        "model_name": "logistic_regression",
+        "n_matches": 109,
+        "note": "Existing feature-based ML baseline carried forward to Phase 8B.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.5596330275229358,
+        "brier_score": 0.56759761937794,
+        "log_loss": 0.9596499446607842,
+        "model_name": "elo_baseline",
+        "n_matches": 109,
+        "note": "Simple rating baseline.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      },
+      {
+        "accuracy": 0.45871559633027525,
+        "brier_score": 0.6401285940947251,
+        "log_loss": 1.0575784983860914,
+        "model_name": "naive_outcome_rate",
+        "n_matches": 109,
+        "note": "Sanity-check baseline.",
+        "source_group": "standalone_and_baselines",
+        "source_report": "reports/poisson_regression_comparison_first_run.json"
+      }
+    ]
+  },
+  "source_reports": {
+    "dixon_coles_variants": "reports/dixon_coles_variants_first_run.json",
+    "standalone_and_baselines": "reports/poisson_regression_comparison_first_run.json",
+    "time_decay_xg_variants": "reports/time_decay_xg_variants_first_run.json"
+  },
+  "supporting_variants": [
+    {
+      "accuracy": 0.6330275229357798,
+      "brier_score": 0.5041210089774745,
+      "log_loss": 0.8649814936634328,
+      "model_name": "dc_rho_mild_minus_08",
+      "n_matches": 109,
+      "note": "",
+      "source_group": "dixon_coles_variants",
+      "source_report": "reports/dixon_coles_variants_first_run.json"
+    },
+    {
+      "accuracy": 0.6238532110091743,
+      "brier_score": 0.5051926721383273,
+      "log_loss": 0.8668710418272054,
+      "model_name": "dc_conservative_xg_shrinkage",
+      "n_matches": 109,
+      "note": "",
+      "source_group": "dixon_coles_variants",
+      "source_report": "reports/dixon_coles_variants_first_run.json"
+    },
+    {
+      "accuracy": 0.6238532110091743,
+      "brier_score": 0.5052017830407998,
+      "log_loss": 0.8669518650349229,
+      "model_name": "dc_score_grid_10",
+      "n_matches": 109,
+      "note": "",
+      "source_group": "dixon_coles_variants",
+      "source_report": "reports/dixon_coles_variants_first_run.json"
+    },
+    {
+      "accuracy": 0.6146788990825688,
+      "brier_score": 0.5057657035051729,
+      "log_loss": 0.8680594772081608,
+      "model_name": "dc_alpha_030",
+      "n_matches": 109,
+      "note": "",
+      "source_group": "dixon_coles_variants",
+      "source_report": "reports/dixon_coles_variants_first_run.json"
+    },
+    {
+      "accuracy": 0.6146788990825688,
+      "brier_score": 0.5064399202395995,
+      "log_loss": 0.8690970671271948,
+      "model_name": "dc_rho_stronger_minus_18",
+      "n_matches": 109,
+      "note": "",
+      "source_group": "dixon_coles_variants",
+      "source_report": "reports/dixon_coles_variants_first_run.json"
+    },
+    {
+      "accuracy": 0.6146788990825688,
+      "brier_score": 0.5055436255234901,
+      "log_loss": 0.8672177142516341,
+      "model_name": "txg_decay_90d",
+      "n_matches": 109,
+      "note": "",
+      "source_group": "time_decay_xg_variants",
+      "source_report": "reports/time_decay_xg_variants_first_run.json"
+    },
+    {
+      "accuracy": 0.6238532110091743,
+      "brier_score": 0.5056183649011396,
+      "log_loss": 0.8677395702978378,
+      "model_name": "txg_alpha_025",
+      "n_matches": 109,
+      "note": "",
+      "source_group": "time_decay_xg_variants",
+      "source_report": "reports/time_decay_xg_variants_first_run.json"
+    },
+    {
+      "accuracy": 0.6238532110091743,
+      "brier_score": 0.5058336090813109,
+      "log_loss": 0.8681692550526584,
+      "model_name": "txg_conservative_weighting",
+      "n_matches": 109,
+      "note": "",
+      "source_group": "time_decay_xg_variants",
+      "source_report": "reports/time_decay_xg_variants_first_run.json"
+    },
+    {
+      "accuracy": 0.6238532110091743,
+      "brier_score": 0.5061241580197554,
+      "log_loss": 0.868380038962944,
+      "model_name": "txg_decay_45d",
+      "n_matches": 109,
+      "note": "",
+      "source_group": "time_decay_xg_variants",
+      "source_report": "reports/time_decay_xg_variants_first_run.json"
+    }
+  ],
+  "title": "Phase 8A Consolidated Statistical Challengers Report"
+}

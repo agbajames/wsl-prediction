@@ -133,10 +133,11 @@ Already done in pushed branch, not yet present on current `main` at reconciliati
 
 Active next:
 
-- [ ] Phase 8A regularised statistical challengers.
-- [ ] Poisson regression challenger.
-- [ ] Dixon-Coles parameter/configuration comparison.
-- [ ] Time-decay and xG-weighting variants with predeclared grids.
+- [x] Phase 8A regularised statistical challengers.
+- [x] Poisson regression challenger.
+- [x] Dixon-Coles parameter/configuration comparison.
+- [x] Time-decay and xG-weighting variants with predeclared grids.
+- [x] Consolidated Phase 8A statistical challengers report.
 
 Later:
 
