@@ -1,0 +1,20 @@
+model_name: naive_outcome_rate
+model_family: naive_outcome_frequency
+model_version: v1
+required_columns:
+  - match_date
+  - home_team
+  - away_team
+  - home_goals
+  - away_goals
+
+config:
+  prior_home: 0.3333333333333333
+  prior_draw: 0.3333333333333333
+  prior_away: 0.3333333333333333
+  prior_strength: 3.0
+
+notes: >
+  Simple challenger baseline that predicts historical home/draw/away outcome
+  rates for every fixture. Intended as a sanity check, not a production model.
+

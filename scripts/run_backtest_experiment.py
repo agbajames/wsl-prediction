@@ -3,8 +3,8 @@
 Run a local rolling backtest experiment scaffold.
 
 This script intentionally reads from a local CSV and does not require live
-Supabase access. It currently supports the frozen champion adapter; future
-challengers can be added by extending ``_model_provider``.
+Supabase access. It supports the frozen champion adapter and simple baseline
+challengers.
 """
 
 from __future__ import annotations
@@ -20,13 +20,18 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from evaluation.backtesting import BacktestConfig, build_rolling_folds, config_to_dict, run_backtest_for_model
+from models.baselines import EloBaseline, NaiveOutcomeRateBaseline
 from models.champion_dc_xg import ChampionDCXGModel
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run a local rolling backtest experiment.")
     parser.add_argument("--csv", required=True, help="Local match-data CSV path.")
-    parser.add_argument("--model", default="champion_dc_xg", choices=["champion_dc_xg"])
+    parser.add_argument(
+        "--model",
+        default="champion_dc_xg",
+        choices=["champion_dc_xg", "naive_outcome_rate", "elo_baseline"],
+    )
     parser.add_argument("--test-start", required=True, help="First test-window date, YYYY-MM-DD.")
     parser.add_argument("--test-end", required=True, help="Final test-window date, YYYY-MM-DD.")
     parser.add_argument("--train-start", default=None, help="Optional earliest training date, YYYY-MM-DD.")
@@ -77,6 +82,10 @@ def main() -> None:
 def _model_provider(model_name: str):
     if model_name == "champion_dc_xg":
         return ChampionDCXGModel
+    if model_name == "naive_outcome_rate":
+        return NaiveOutcomeRateBaseline
+    if model_name == "elo_baseline":
+        return EloBaseline
     raise ValueError(f"Unsupported model: {model_name}")
 
 
