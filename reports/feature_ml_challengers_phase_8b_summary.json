@@ -1,0 +1,544 @@
+{
+  "decision": {
+    "best_feature_ml_accuracy_candidate": {
+      "accuracy": 0.5871559633027523,
+      "brier_score": 0.5491279193234373,
+      "log_loss": 0.9385277413364673,
+      "model_name": "random_forest",
+      "n_matches": 109,
+      "note": "Conservative tree-based challenger; best feature-ML accuracy in Phase 8B.",
+      "source_report": "reports/tree_based_challenger_first_run.json"
+    },
+    "best_feature_ml_probability_candidate": {
+      "accuracy": 0.5779816513761468,
+      "brier_score": 0.5384134151469991,
+      "log_loss": 0.9355651495921326,
+      "model_name": "improved_logistic_regression",
+      "n_matches": 109,
+      "note": "Best feature-based ML challenger on Brier score and log loss.",
+      "source_report": "reports/tree_based_challenger_first_run.json"
+    },
+    "best_overall_probability_candidate": {
+      "accuracy": 0.6146788990825688,
+      "brier_score": 0.5027457241109727,
+      "log_loss": 0.8623096504823061,
+      "model_name": "dc_fit_rho_each_fold",
+      "n_matches": 109,
+      "note": "Phase 8A best probability-quality candidate; not promoted.",
+      "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+    },
+    "most_balanced_champion_family_candidate": {
+      "accuracy": 0.6330275229357798,
+      "brier_score": 0.5038043461119377,
+      "log_loss": 0.8649044270342365,
+      "model_name": "txg_xg_pseudocount_010",
+      "n_matches": 109,
+      "note": "Phase 8A most balanced champion-family candidate; not promoted.",
+      "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+    },
+    "operational_reference": {
+      "accuracy": 0.6238532110091743,
+      "brier_score": 0.5052116241719459,
+      "log_loss": 0.8668995129359902,
+      "model_name": "champion_dc_xg",
+      "n_matches": 109,
+      "note": "Unchanged operational/reference model.",
+      "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+    },
+    "production_promotion": "none",
+    "recommendation": "Prioritise Phase 8D ensemble/blending and Phase 8E shadow testing; keep Phase 8C neural network work research-only or parked.",
+    "strongest_standalone_statistical_challenger": {
+      "accuracy": 0.5963302752293578,
+      "brier_score": 0.5256032916893584,
+      "log_loss": 0.900115844731262,
+      "model_name": "regularised_team_strength",
+      "n_matches": 109,
+      "note": "Strongest standalone statistical challenger.",
+      "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+    }
+  },
+  "feature_ml_rankings": {
+    "accuracy": [
+      {
+        "accuracy": 0.5871559633027523,
+        "brier_score": 0.5491279193234373,
+        "log_loss": 0.9385277413364673,
+        "model_name": "random_forest",
+        "n_matches": 109,
+        "note": "Conservative tree-based challenger; best feature-ML accuracy in Phase 8B.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      },
+      {
+        "accuracy": 0.5779816513761468,
+        "brier_score": 0.5384134151469991,
+        "log_loss": 0.9355651495921326,
+        "model_name": "improved_logistic_regression",
+        "n_matches": 109,
+        "note": "Best feature-based ML challenger on Brier score and log loss.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      },
+      {
+        "accuracy": 0.5779816513761468,
+        "brier_score": 0.5561781781310142,
+        "log_loss": 0.9559694660605309,
+        "model_name": "logistic_regression",
+        "n_matches": 109,
+        "note": "Original feature-based ML baseline.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      }
+    ],
+    "brier_score": [
+      {
+        "accuracy": 0.5779816513761468,
+        "brier_score": 0.5384134151469991,
+        "log_loss": 0.9355651495921326,
+        "model_name": "improved_logistic_regression",
+        "n_matches": 109,
+        "note": "Best feature-based ML challenger on Brier score and log loss.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      },
+      {
+        "accuracy": 0.5871559633027523,
+        "brier_score": 0.5491279193234373,
+        "log_loss": 0.9385277413364673,
+        "model_name": "random_forest",
+        "n_matches": 109,
+        "note": "Conservative tree-based challenger; best feature-ML accuracy in Phase 8B.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      },
+      {
+        "accuracy": 0.5779816513761468,
+        "brier_score": 0.5561781781310142,
+        "log_loss": 0.9559694660605309,
+        "model_name": "logistic_regression",
+        "n_matches": 109,
+        "note": "Original feature-based ML baseline.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      }
+    ]
+  },
+  "improved_logistic_ablation": [
+    {
+      "accuracy": 0.5779816513761468,
+      "brier_score": 0.5384134151469991,
+      "log_loss": 0.9355651495921326,
+      "model_name": "improved_logistic_xg",
+      "n_matches": 109,
+      "note": "",
+      "source_report": "reports/improved_logistic_regression_ablation_first_run.json"
+    },
+    {
+      "accuracy": 0.5688073394495413,
+      "brier_score": 0.5528871979867379,
+      "log_loss": 0.9495606405978684,
+      "model_name": "improved_logistic_base",
+      "n_matches": 109,
+      "note": "",
+      "source_report": "reports/improved_logistic_regression_ablation_first_run.json"
+    },
+    {
+      "accuracy": 0.5688073394495413,
+      "brier_score": 0.5530075872658419,
+      "log_loss": 0.9520968365914032,
+      "model_name": "improved_logistic_opponent",
+      "n_matches": 109,
+      "note": "",
+      "source_report": "reports/improved_logistic_regression_ablation_first_run.json"
+    },
+    {
+      "accuracy": 0.5504587155963303,
+      "brier_score": 0.5786311505030592,
+      "log_loss": 1.011241516059537,
+      "model_name": "improved_logistic_full",
+      "n_matches": 109,
+      "note": "",
+      "source_report": "reports/improved_logistic_regression_ablation_first_run.json"
+    },
+    {
+      "accuracy": 0.5321100917431193,
+      "brier_score": 0.587798795838918,
+      "log_loss": 1.0144903437068158,
+      "model_name": "improved_logistic_form",
+      "n_matches": 109,
+      "note": "",
+      "source_report": "reports/improved_logistic_regression_ablation_first_run.json"
+    }
+  ],
+  "primary_models": [
+    {
+      "accuracy": 0.6146788990825688,
+      "brier_score": 0.5027457241109727,
+      "log_loss": 0.8623096504823061,
+      "model_name": "dc_fit_rho_each_fold",
+      "n_matches": 109,
+      "note": "Phase 8A best probability-quality candidate; not promoted.",
+      "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+    },
+    {
+      "accuracy": 0.6330275229357798,
+      "brier_score": 0.5038043461119377,
+      "log_loss": 0.8649044270342365,
+      "model_name": "txg_xg_pseudocount_010",
+      "n_matches": 109,
+      "note": "Phase 8A most balanced champion-family candidate; not promoted.",
+      "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+    },
+    {
+      "accuracy": 0.6238532110091743,
+      "brier_score": 0.5052116241719459,
+      "log_loss": 0.8668995129359902,
+      "model_name": "champion_dc_xg",
+      "n_matches": 109,
+      "note": "Unchanged operational/reference model.",
+      "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+    },
+    {
+      "accuracy": 0.5963302752293578,
+      "brier_score": 0.5256032916893584,
+      "log_loss": 0.900115844731262,
+      "model_name": "regularised_team_strength",
+      "n_matches": 109,
+      "note": "Strongest standalone statistical challenger.",
+      "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+    },
+    {
+      "accuracy": 0.5779816513761468,
+      "brier_score": 0.5384134151469991,
+      "log_loss": 0.9355651495921326,
+      "model_name": "improved_logistic_regression",
+      "n_matches": 109,
+      "note": "Best feature-based ML challenger on Brier score and log loss.",
+      "source_report": "reports/tree_based_challenger_first_run.json"
+    },
+    {
+      "accuracy": 0.5871559633027523,
+      "brier_score": 0.5491279193234373,
+      "log_loss": 0.9385277413364673,
+      "model_name": "random_forest",
+      "n_matches": 109,
+      "note": "Conservative tree-based challenger; best feature-ML accuracy in Phase 8B.",
+      "source_report": "reports/tree_based_challenger_first_run.json"
+    },
+    {
+      "accuracy": 0.5779816513761468,
+      "brier_score": 0.5561781781310142,
+      "log_loss": 0.9559694660605309,
+      "model_name": "logistic_regression",
+      "n_matches": 109,
+      "note": "Original feature-based ML baseline.",
+      "source_report": "reports/tree_based_challenger_first_run.json"
+    },
+    {
+      "accuracy": 0.5412844036697247,
+      "brier_score": 0.5584688322280069,
+      "log_loss": 0.9426256836167224,
+      "model_name": "poisson_regression",
+      "n_matches": 109,
+      "note": "Interpretable statistical challenger.",
+      "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+    },
+    {
+      "accuracy": 0.5596330275229358,
+      "brier_score": 0.56759761937794,
+      "log_loss": 0.9596499446607842,
+      "model_name": "elo_baseline",
+      "n_matches": 109,
+      "note": "Simple rating baseline.",
+      "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+    },
+    {
+      "accuracy": 0.45871559633027525,
+      "brier_score": 0.6401285940947251,
+      "log_loss": 1.0575784983860914,
+      "model_name": "naive_outcome_rate",
+      "n_matches": 109,
+      "note": "Sanity-check baseline.",
+      "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+    }
+  ],
+  "rankings": {
+    "accuracy": [
+      {
+        "accuracy": 0.6330275229357798,
+        "brier_score": 0.5038043461119377,
+        "log_loss": 0.8649044270342365,
+        "model_name": "txg_xg_pseudocount_010",
+        "n_matches": 109,
+        "note": "Phase 8A most balanced champion-family candidate; not promoted.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.6238532110091743,
+        "brier_score": 0.5052116241719459,
+        "log_loss": 0.8668995129359902,
+        "model_name": "champion_dc_xg",
+        "n_matches": 109,
+        "note": "Unchanged operational/reference model.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.6146788990825688,
+        "brier_score": 0.5027457241109727,
+        "log_loss": 0.8623096504823061,
+        "model_name": "dc_fit_rho_each_fold",
+        "n_matches": 109,
+        "note": "Phase 8A best probability-quality candidate; not promoted.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.5963302752293578,
+        "brier_score": 0.5256032916893584,
+        "log_loss": 0.900115844731262,
+        "model_name": "regularised_team_strength",
+        "n_matches": 109,
+        "note": "Strongest standalone statistical challenger.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.5871559633027523,
+        "brier_score": 0.5491279193234373,
+        "log_loss": 0.9385277413364673,
+        "model_name": "random_forest",
+        "n_matches": 109,
+        "note": "Conservative tree-based challenger; best feature-ML accuracy in Phase 8B.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      },
+      {
+        "accuracy": 0.5779816513761468,
+        "brier_score": 0.5384134151469991,
+        "log_loss": 0.9355651495921326,
+        "model_name": "improved_logistic_regression",
+        "n_matches": 109,
+        "note": "Best feature-based ML challenger on Brier score and log loss.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      },
+      {
+        "accuracy": 0.5779816513761468,
+        "brier_score": 0.5561781781310142,
+        "log_loss": 0.9559694660605309,
+        "model_name": "logistic_regression",
+        "n_matches": 109,
+        "note": "Original feature-based ML baseline.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      },
+      {
+        "accuracy": 0.5596330275229358,
+        "brier_score": 0.56759761937794,
+        "log_loss": 0.9596499446607842,
+        "model_name": "elo_baseline",
+        "n_matches": 109,
+        "note": "Simple rating baseline.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.5412844036697247,
+        "brier_score": 0.5584688322280069,
+        "log_loss": 0.9426256836167224,
+        "model_name": "poisson_regression",
+        "n_matches": 109,
+        "note": "Interpretable statistical challenger.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.45871559633027525,
+        "brier_score": 0.6401285940947251,
+        "log_loss": 1.0575784983860914,
+        "model_name": "naive_outcome_rate",
+        "n_matches": 109,
+        "note": "Sanity-check baseline.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      }
+    ],
+    "brier_score": [
+      {
+        "accuracy": 0.6146788990825688,
+        "brier_score": 0.5027457241109727,
+        "log_loss": 0.8623096504823061,
+        "model_name": "dc_fit_rho_each_fold",
+        "n_matches": 109,
+        "note": "Phase 8A best probability-quality candidate; not promoted.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.6330275229357798,
+        "brier_score": 0.5038043461119377,
+        "log_loss": 0.8649044270342365,
+        "model_name": "txg_xg_pseudocount_010",
+        "n_matches": 109,
+        "note": "Phase 8A most balanced champion-family candidate; not promoted.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.6238532110091743,
+        "brier_score": 0.5052116241719459,
+        "log_loss": 0.8668995129359902,
+        "model_name": "champion_dc_xg",
+        "n_matches": 109,
+        "note": "Unchanged operational/reference model.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.5963302752293578,
+        "brier_score": 0.5256032916893584,
+        "log_loss": 0.900115844731262,
+        "model_name": "regularised_team_strength",
+        "n_matches": 109,
+        "note": "Strongest standalone statistical challenger.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.5779816513761468,
+        "brier_score": 0.5384134151469991,
+        "log_loss": 0.9355651495921326,
+        "model_name": "improved_logistic_regression",
+        "n_matches": 109,
+        "note": "Best feature-based ML challenger on Brier score and log loss.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      },
+      {
+        "accuracy": 0.5871559633027523,
+        "brier_score": 0.5491279193234373,
+        "log_loss": 0.9385277413364673,
+        "model_name": "random_forest",
+        "n_matches": 109,
+        "note": "Conservative tree-based challenger; best feature-ML accuracy in Phase 8B.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      },
+      {
+        "accuracy": 0.5779816513761468,
+        "brier_score": 0.5561781781310142,
+        "log_loss": 0.9559694660605309,
+        "model_name": "logistic_regression",
+        "n_matches": 109,
+        "note": "Original feature-based ML baseline.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      },
+      {
+        "accuracy": 0.5412844036697247,
+        "brier_score": 0.5584688322280069,
+        "log_loss": 0.9426256836167224,
+        "model_name": "poisson_regression",
+        "n_matches": 109,
+        "note": "Interpretable statistical challenger.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.5596330275229358,
+        "brier_score": 0.56759761937794,
+        "log_loss": 0.9596499446607842,
+        "model_name": "elo_baseline",
+        "n_matches": 109,
+        "note": "Simple rating baseline.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.45871559633027525,
+        "brier_score": 0.6401285940947251,
+        "log_loss": 1.0575784983860914,
+        "model_name": "naive_outcome_rate",
+        "n_matches": 109,
+        "note": "Sanity-check baseline.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      }
+    ],
+    "log_loss": [
+      {
+        "accuracy": 0.6146788990825688,
+        "brier_score": 0.5027457241109727,
+        "log_loss": 0.8623096504823061,
+        "model_name": "dc_fit_rho_each_fold",
+        "n_matches": 109,
+        "note": "Phase 8A best probability-quality candidate; not promoted.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.6330275229357798,
+        "brier_score": 0.5038043461119377,
+        "log_loss": 0.8649044270342365,
+        "model_name": "txg_xg_pseudocount_010",
+        "n_matches": 109,
+        "note": "Phase 8A most balanced champion-family candidate; not promoted.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.6238532110091743,
+        "brier_score": 0.5052116241719459,
+        "log_loss": 0.8668995129359902,
+        "model_name": "champion_dc_xg",
+        "n_matches": 109,
+        "note": "Unchanged operational/reference model.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.5963302752293578,
+        "brier_score": 0.5256032916893584,
+        "log_loss": 0.900115844731262,
+        "model_name": "regularised_team_strength",
+        "n_matches": 109,
+        "note": "Strongest standalone statistical challenger.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.5779816513761468,
+        "brier_score": 0.5384134151469991,
+        "log_loss": 0.9355651495921326,
+        "model_name": "improved_logistic_regression",
+        "n_matches": 109,
+        "note": "Best feature-based ML challenger on Brier score and log loss.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      },
+      {
+        "accuracy": 0.5871559633027523,
+        "brier_score": 0.5491279193234373,
+        "log_loss": 0.9385277413364673,
+        "model_name": "random_forest",
+        "n_matches": 109,
+        "note": "Conservative tree-based challenger; best feature-ML accuracy in Phase 8B.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      },
+      {
+        "accuracy": 0.5412844036697247,
+        "brier_score": 0.5584688322280069,
+        "log_loss": 0.9426256836167224,
+        "model_name": "poisson_regression",
+        "n_matches": 109,
+        "note": "Interpretable statistical challenger.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.5779816513761468,
+        "brier_score": 0.5561781781310142,
+        "log_loss": 0.9559694660605309,
+        "model_name": "logistic_regression",
+        "n_matches": 109,
+        "note": "Original feature-based ML baseline.",
+        "source_report": "reports/tree_based_challenger_first_run.json"
+      },
+      {
+        "accuracy": 0.5596330275229358,
+        "brier_score": 0.56759761937794,
+        "log_loss": 0.9596499446607842,
+        "model_name": "elo_baseline",
+        "n_matches": 109,
+        "note": "Simple rating baseline.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      },
+      {
+        "accuracy": 0.45871559633027525,
+        "brier_score": 0.6401285940947251,
+        "log_loss": 1.0575784983860914,
+        "model_name": "naive_outcome_rate",
+        "n_matches": 109,
+        "note": "Sanity-check baseline.",
+        "source_report": "reports/statistical_challengers_phase_8a_summary.json"
+      }
+    ]
+  },
+  "source_reports": {
+    "improved_logistic_ablation": "reports/improved_logistic_regression_ablation_first_run.json",
+    "phase_8a_summary": "reports/statistical_challengers_phase_8a_summary.json",
+    "tree_based_comparison": "reports/tree_based_challenger_first_run.json",
+    "tree_feature_importance": "reports/tree_based_challenger_feature_importance_first_run.md"
+  },
+  "title": "Phase 8B Consolidated Feature-Based ML Challengers Report"
+}

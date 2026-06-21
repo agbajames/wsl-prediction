@@ -141,8 +141,9 @@ Active next:
 
 Later:
 
-- [ ] Phase 8B improved logistic and tree challengers.
-- [ ] Phase 8C neural network proof-of-concept.
+- [x] Phase 8B improved logistic and tree challengers.
+- [x] Consolidated Phase 8B feature-based ML challengers report.
+- [ ] Phase 8C neural network proof-of-concept, research-only or parked until there is more data.
 - [ ] Phase 8D non-market ensemble/blending.
 - [ ] Phase 8E shadow testing on upcoming matches.
 - [ ] Phase 9 production evaluation pack and model decision record.
