@@ -1,0 +1,22 @@
+model_name: elo_baseline
+model_family: elo_result_rating
+model_version: v1
+required_columns:
+  - match_date
+  - home_team
+  - away_team
+  - home_goals
+  - away_goals
+
+config:
+  initial_rating: 1500.0
+  k_factor: 20.0
+  home_advantage: 65.0
+  draw_base_probability: 0.26
+  draw_rating_scale: 400.0
+
+notes: >
+  Transparent Elo challenger based only on historical match results. It is
+  intended for rolling backtest comparison against the frozen champion before
+  more complex challenger models are introduced.
+
