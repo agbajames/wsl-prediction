@@ -138,6 +138,14 @@ def build_shadow_model_providers(model_names: Sequence[str]) -> dict[str, ModelP
     return providers
 
 
+def validate_shadow_model_names(model_names: Sequence[str]) -> tuple[str, ...]:
+    """Validate that requested shadow models and blend components are callable."""
+    requested = tuple(dict.fromkeys(model_names))
+    required_model_names = _required_model_names(requested)
+    build_shadow_model_providers(required_model_names)
+    return requested
+
+
 def generate_shadow_predictions(
     historical_matches: pd.DataFrame,
     fixtures: pd.DataFrame,

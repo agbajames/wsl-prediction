@@ -1,0 +1,2 @@
+fixture_id,fixture_date,round_label,season,home_team,away_team,source_notes
+TEMPLATE-REPLACE-WITH-SOURCE-ID,2099-01-01,R1,TEMPLATE-SEASON,TEMPLATE_HOME_TEAM,TEMPLATE_AWAY_TEAM,TEMPLATE ONLY - replace every value with real upcoming fixture data before generating predictions
