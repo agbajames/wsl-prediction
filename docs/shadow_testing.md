@@ -4,6 +4,8 @@ Phase 8E-1 adds an evaluation-only framework for saving pre-match predictions be
 
 Phase 8E-2 turns that framework into the first real-run workflow. If real upcoming WSL fixture data is not available locally, stop after validating the template or prepared fixture file. Do not fabricate fixtures, predictions or results.
 
+Phase 8E-3 adds a local fixture normalisation helper for converting an approved local upcoming-fixtures CSV into the canonical shadow fixture schema. It does not fetch, scrape or create fixtures.
+
 ## Fixture Input Schema
 
 Upcoming fixture files may be CSV or JSON. JSON may be either a list of objects or an object with a `fixtures` list.
@@ -26,27 +28,56 @@ Recommended fields:
 
 See `data/templates/shadow_fixtures_template.csv` for the real-run input shape and `data/samples/shadow_fixtures_sample.csv` for a safe synthetic/sample input. The template is not a prediction artefact and must have every placeholder replaced before generation.
 
+## Normalise Raw Fixture CSVs
+
+Use `scripts/normalise_shadow_fixtures.py` when the available source file uses different column names from the shadow template. The script reads a local CSV only; it never fetches fixtures from the web or Supabase.
+
+Accepted required column-name variants:
+
+| canonical field | accepted raw names |
+| --- | --- |
+| `fixture_date` | `fixture_date`, `match_date`, `date` |
+| `home_team` | `home_team`, `home`, `home_team_name` |
+| `away_team` | `away_team`, `away`, `away_team_name` |
+
+Accepted optional raw names include `fixture_id`, `id`, `match_id`, `game_id`, `round_label`, `round`, `matchweek`, `match_week`, `season`, `competition`, `competition_name`, `venue`, `stadium`, `kickoff_time`, `kickoff`, `time`, `source_notes` and `notes`.
+
+The normaliser validates that fixture dates are parseable, home and away teams are present, teams are not identical, and duplicate fixture rows or duplicate fixture IDs are flagged. Completed-result columns such as `home_goals`, `away_goals` or `actual_outcome` are not required for upcoming fixtures and are not copied into the normalised output.
+
+Example with the safe sample input:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\normalise_shadow_fixtures.py `
+  --input data\samples\raw_shadow_fixtures_sample.csv `
+  --output data\shadow\upcoming_wsl_fixtures.csv
+```
+
+For a real run, replace the sample input with an approved local raw fixture CSV. Keep raw private exports and unapproved real fixture files out of Git.
+
 ## First Real Shadow Runbook
 
 1. Prepare a fixture input file from a real, approved upcoming WSL fixture source.
    - Save local working inputs outside Git unless they are public and approved for commit.
    - Use `data/templates/shadow_fixtures_template.csv` as the column guide.
    - Include one row per upcoming fixture and prefer stable source `fixture_id` values over fallback IDs.
-2. Confirm the historical export contains only matches known before each fixture date.
+2. If the source column names differ from the template, normalise the raw CSV.
+   - Run `scripts\normalise_shadow_fixtures.py --input path\to\raw_upcoming_fixtures.csv --output data\shadow\upcoming_wsl_fixtures.csv`.
+   - Review the output before any prediction generation.
+3. Confirm the historical export contains only matches known before each fixture date.
    - The usual local path is `data/exports/wsl_match_data.csv`.
    - The generation code trains each model on `match_date < fixture_date` for every fixture group.
-3. Choose the candidate set.
+4. Choose the candidate set.
    - Start with the core tracking set below unless a candidate is temporarily broken.
    - Omit unavailable candidates with explicit repeated `--model` arguments; do not change production prediction code to make a shadow run pass.
-4. Validate fixtures before generating predictions.
+5. Validate fixtures before generating predictions.
    - This confirms the fixture schema and prints the planned model set and current git SHA.
-5. Generate a timestamped artefact only from real upcoming fixture input.
+6. Generate a timestamped artefact only from real upcoming fixture input.
    - Write artefacts under `reports/shadow_predictions/`.
    - Use UTC-style filenames, for example `shadow_predictions_20260905T103000Z.json`.
-6. Verify provenance immediately after generation.
+7. Verify provenance immediately after generation.
    - Open the JSON metadata and confirm `git_sha`, `generated_at`, `history_csv`, `fixtures`, `models` and `min_train_matches`.
    - Confirm every prediction row has a non-empty `prediction_timestamp`, `git_sha`, `model_config` and stable fixture key.
-7. Replay after results are known.
+8. Replay after results are known.
    - Prepare a results file with matching `fixture_id` values and either `actual_outcome` or `home_goals`/`away_goals`.
    - Write replay output under `reports/shadow_predictions/`.
    - Treat pending fixtures as unevaluated; only completed rows contribute to metrics.
@@ -92,7 +123,7 @@ Validate the fixture file first. This command does not fit models and does not w
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\generate_shadow_predictions.py `
-  --fixtures data\templates\shadow_fixtures_template.csv `
+  --fixtures data\shadow\upcoming_wsl_fixtures.csv `
   --validate-fixtures-only
 ```
 
@@ -138,5 +169,6 @@ Pending fixtures remain in the replay payload with no metrics impact. Completed 
 - `champion_dc_xg` remains the operational/reference model.
 - No model is promoted from a shadow run alone.
 - Fixture templates and samples are clearly labelled and cannot be mistaken for real predictions.
+- Raw private fixture exports and normalised real fixture files stay out of Git unless explicitly approved.
 - Real prediction artefacts are generated only from real upcoming fixture input.
 - `.env`, credentials, Supabase keys and private exports stay out of Git.
