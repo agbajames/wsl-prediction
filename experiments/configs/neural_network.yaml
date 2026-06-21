@@ -1,0 +1,24 @@
+model_name: neural_network
+model_family: research_tiny_tabular_mlp
+model_version: v1
+required_columns:
+  - match_date
+  - home_team
+  - away_team
+  - home_goals
+  - away_goals
+
+config:
+  hidden_units: 8
+  learning_rate: 0.03
+  l2_penalty: 0.01
+  max_iter: 500
+  min_training_matches: 12
+  random_seed: 42
+  feature_group: xg
+  recent_window: 4
+
+notes: >
+  Research-only Phase 8C proof-of-concept. The model uses a tiny internal MLP
+  over leakage-safe xG features, fits scaling on each training fold only, and
+  should not be considered for production promotion from one WSL season.
