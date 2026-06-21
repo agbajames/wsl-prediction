@@ -1,0 +1,373 @@
+{
+  "calibrated_calibration": {
+    "accuracy": 0.6512,
+    "calibration_bins": [
+      {
+        "bin": "0%-20%",
+        "calibration_gap": null,
+        "count": 0,
+        "is_sparse": true,
+        "lower": 0.0,
+        "mean_confidence": null,
+        "observed_accuracy": null,
+        "upper": 0.2
+      },
+      {
+        "bin": "20%-40%",
+        "calibration_gap": -0.1259,
+        "count": 2,
+        "is_sparse": false,
+        "lower": 0.2,
+        "mean_confidence": 0.3741,
+        "observed_accuracy": 0.5,
+        "upper": 0.4
+      },
+      {
+        "bin": "40%-60%",
+        "calibration_gap": 0.1037,
+        "count": 18,
+        "is_sparse": false,
+        "lower": 0.4,
+        "mean_confidence": 0.4926,
+        "observed_accuracy": 0.3889,
+        "upper": 0.6
+      },
+      {
+        "bin": "60%-80%",
+        "calibration_gap": -0.1163,
+        "count": 17,
+        "is_sparse": false,
+        "lower": 0.6,
+        "mean_confidence": 0.7072,
+        "observed_accuracy": 0.8235,
+        "upper": 0.8
+      },
+      {
+        "bin": "80%-100%",
+        "calibration_gap": -0.1605,
+        "count": 6,
+        "is_sparse": false,
+        "lower": 0.8,
+        "mean_confidence": 0.8395,
+        "observed_accuracy": 1.0,
+        "upper": 1.0
+      }
+    ],
+    "confidence_buckets": [
+      {
+        "accuracy": 0.5,
+        "bucket": "low",
+        "calibration_gap": -0.1259,
+        "count": 2,
+        "is_sparse": false,
+        "lower": 0.0,
+        "mean_confidence": 0.3741,
+        "upper": 0.4
+      },
+      {
+        "accuracy": 0.3889,
+        "bucket": "medium",
+        "calibration_gap": 0.1037,
+        "count": 18,
+        "is_sparse": false,
+        "lower": 0.4,
+        "mean_confidence": 0.4926,
+        "upper": 0.6
+      },
+      {
+        "accuracy": 0.8696,
+        "bucket": "high",
+        "calibration_gap": -0.1279,
+        "count": 23,
+        "is_sparse": false,
+        "lower": 0.6,
+        "mean_confidence": 0.7417,
+        "upper": 1.0
+      }
+    ],
+    "mean_confidence": 0.6203,
+    "n_matches": 43
+  },
+  "champion_model": "champion_dc_xg",
+  "high_confidence_behaviour": {
+    "calibrated": {
+      "accuracy": 0.8696,
+      "count": 23,
+      "mean_confidence": 0.7417,
+      "share": 0.5349,
+      "threshold": 0.6
+    },
+    "original": {
+      "accuracy": 0.9,
+      "count": 20,
+      "mean_confidence": 0.7594,
+      "share": 0.4651,
+      "threshold": 0.6
+    }
+  },
+  "interpretation": [
+    "Calibration did not improve Brier score or log loss on this trial split; keep the original champion as reference.",
+    "Accuracy also fell on this trial split, so this calibrated variant is not a production-testing candidate yet."
+  ],
+  "methodology": {
+    "calibration_folds": [
+      "fold_001",
+      "fold_002",
+      "fold_003",
+      "fold_004",
+      "fold_005",
+      "fold_006",
+      "fold_007",
+      "fold_008",
+      "fold_009",
+      "fold_010",
+      "fold_011"
+    ],
+    "calibration_fraction": 0.6,
+    "calibration_matches": 66,
+    "method": "Fit temperature scaling plus base-rate shrinkage on earlier folds; evaluate on later folds.",
+    "trial_folds": [
+      "fold_012",
+      "fold_013",
+      "fold_014",
+      "fold_015",
+      "fold_016",
+      "fold_017",
+      "fold_018",
+      "fold_019"
+    ],
+    "trial_matches": 43
+  },
+  "metric_delta_calibrated_minus_original": {
+    "accuracy": -0.0233,
+    "brier_score": 0.0028,
+    "log_loss": 0.012
+  },
+  "original_calibration": {
+    "accuracy": 0.6744,
+    "calibration_bins": [
+      {
+        "bin": "0%-20%",
+        "calibration_gap": null,
+        "count": 0,
+        "is_sparse": true,
+        "lower": 0.0,
+        "mean_confidence": null,
+        "observed_accuracy": null,
+        "upper": 0.2
+      },
+      {
+        "bin": "20%-40%",
+        "calibration_gap": -0.3717,
+        "count": 4,
+        "is_sparse": false,
+        "lower": 0.2,
+        "mean_confidence": 0.3783,
+        "observed_accuracy": 0.75,
+        "upper": 0.4
+      },
+      {
+        "bin": "40%-60%",
+        "calibration_gap": 0.0705,
+        "count": 19,
+        "is_sparse": false,
+        "lower": 0.4,
+        "mean_confidence": 0.4916,
+        "observed_accuracy": 0.4211,
+        "upper": 0.6
+      },
+      {
+        "bin": "60%-80%",
+        "calibration_gap": -0.145,
+        "count": 14,
+        "is_sparse": false,
+        "lower": 0.6,
+        "mean_confidence": 0.7121,
+        "observed_accuracy": 0.8571,
+        "upper": 0.8
+      },
+      {
+        "bin": "80%-100%",
+        "calibration_gap": -0.1303,
+        "count": 6,
+        "is_sparse": false,
+        "lower": 0.8,
+        "mean_confidence": 0.8697,
+        "observed_accuracy": 1.0,
+        "upper": 1.0
+      }
+    ],
+    "confidence_buckets": [
+      {
+        "accuracy": 0.75,
+        "bucket": "low",
+        "calibration_gap": -0.3717,
+        "count": 4,
+        "is_sparse": false,
+        "lower": 0.0,
+        "mean_confidence": 0.3783,
+        "upper": 0.4
+      },
+      {
+        "accuracy": 0.4211,
+        "bucket": "medium",
+        "calibration_gap": 0.0705,
+        "count": 19,
+        "is_sparse": false,
+        "lower": 0.4,
+        "mean_confidence": 0.4916,
+        "upper": 0.6
+      },
+      {
+        "accuracy": 0.9,
+        "bucket": "high",
+        "calibration_gap": -0.1406,
+        "count": 20,
+        "is_sparse": false,
+        "lower": 0.6,
+        "mean_confidence": 0.7594,
+        "upper": 1.0
+      }
+    ],
+    "mean_confidence": 0.6056,
+    "n_matches": 43
+  },
+  "overall_metrics": [
+    {
+      "accuracy": 0.6744186046511628,
+      "brier_score": 0.4502949718130922,
+      "log_loss": 0.7830726193023486,
+      "model_name": "original_champion",
+      "n_matches": 43
+    },
+    {
+      "accuracy": 0.6511627906976745,
+      "brier_score": 0.4531083430432681,
+      "log_loss": 0.7950645792177226,
+      "model_name": "calibrated_champion",
+      "n_matches": 43
+    }
+  ],
+  "parameters": {
+    "base_rates": {
+      "away_win": 0.3485,
+      "draw": 0.197,
+      "home_win": 0.4545
+    },
+    "method": "temperature_scaling_with_base_rate_shrinkage",
+    "shrinkage": 0.21,
+    "temperature": 0.725
+  },
+  "worst_misses_after_calibration": [
+    {
+      "actual_outcome": "D",
+      "actual_probability": 0.1137,
+      "away_team": "Manchester City",
+      "home_team": "Aston Villa",
+      "match_date": "2026-03-15",
+      "predicted_confidence": 0.7514,
+      "predicted_outcome": "A",
+      "round": "R17",
+      "row_log_loss": 2.1743
+    },
+    {
+      "actual_outcome": "A",
+      "actual_probability": 0.1608,
+      "away_team": "West Ham United",
+      "home_team": "Aston Villa",
+      "match_date": "2026-05-04",
+      "predicted_confidence": 0.5944,
+      "predicted_outcome": "H",
+      "round": "R21",
+      "row_log_loss": 1.8274
+    },
+    {
+      "actual_outcome": "A",
+      "actual_probability": 0.1638,
+      "away_team": "West Ham United",
+      "home_team": "Liverpool",
+      "match_date": "2026-04-26",
+      "predicted_confidence": 0.5309,
+      "predicted_outcome": "H",
+      "round": "R20",
+      "row_log_loss": 1.8088
+    },
+    {
+      "actual_outcome": "A",
+      "actual_probability": 0.1767,
+      "away_team": "Everton",
+      "home_team": "Tottenham Hotspur",
+      "match_date": "2026-03-15",
+      "predicted_confidence": 0.6237,
+      "predicted_outcome": "H",
+      "round": "R17",
+      "row_log_loss": 1.733
+    },
+    {
+      "actual_outcome": "D",
+      "actual_probability": 0.212,
+      "away_team": "Arsenal",
+      "home_team": "Brighton",
+      "match_date": "2026-05-06",
+      "predicted_confidence": 0.6496,
+      "predicted_outcome": "A",
+      "round": "R16",
+      "row_log_loss": 1.551
+    },
+    {
+      "actual_outcome": "H",
+      "actual_probability": 0.2348,
+      "away_team": "Manchester City",
+      "home_team": "Brighton",
+      "match_date": "2026-04-25",
+      "predicted_confidence": 0.5303,
+      "predicted_outcome": "A",
+      "round": "R20",
+      "row_log_loss": 1.4489
+    },
+    {
+      "actual_outcome": "D",
+      "actual_probability": 0.2362,
+      "away_team": "Manchester United",
+      "home_team": "Tottenham Hotspur",
+      "match_date": "2026-04-26",
+      "predicted_confidence": 0.4093,
+      "predicted_outcome": "H",
+      "round": "R20",
+      "row_log_loss": 1.4429
+    },
+    {
+      "actual_outcome": "A",
+      "actual_probability": 0.2413,
+      "away_team": "Liverpool",
+      "home_team": "Everton",
+      "match_date": "2026-03-28",
+      "predicted_confidence": 0.4459,
+      "predicted_outcome": "H",
+      "round": "R19",
+      "row_log_loss": 1.4219
+    },
+    {
+      "actual_outcome": "D",
+      "actual_probability": 0.2527,
+      "away_team": "Manchester United",
+      "home_team": "West Ham United",
+      "match_date": "2026-03-18",
+      "predicted_confidence": 0.5028,
+      "predicted_outcome": "A",
+      "round": "R17",
+      "row_log_loss": 1.3754
+    },
+    {
+      "actual_outcome": "D",
+      "actual_probability": 0.2561,
+      "away_team": "Chelsea",
+      "home_team": "London City Lionesses",
+      "match_date": "2026-03-21",
+      "predicted_confidence": 0.4685,
+      "predicted_outcome": "A",
+      "round": "R18",
+      "row_log_loss": 1.3623
+    }
+  ]
+}
