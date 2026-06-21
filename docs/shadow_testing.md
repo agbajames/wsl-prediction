@@ -2,6 +2,8 @@
 
 Phase 8E-1 adds an evaluation-only framework for saving pre-match predictions before WSL fixtures are played and replaying those saved rows after results are known. It does not promote a model, change production prediction behaviour, or modify `model/wsl_xg_model.py`; `champion_dc_xg` remains the operational/reference model.
 
+Phase 8E-2 turns that framework into the first real-run workflow. If real upcoming WSL fixture data is not available locally, stop after validating the template or prepared fixture file. Do not fabricate fixtures, predictions or results.
+
 ## Fixture Input Schema
 
 Upcoming fixture files may be CSV or JSON. JSON may be either a list of objects or an object with a `fixtures` list.
@@ -22,7 +24,32 @@ Recommended fields:
 | `round_label` | Competition round or matchweek label. |
 | `season` | Season label such as `2026-27`. |
 
-See `data/samples/shadow_fixtures_sample.csv` for a safe sample input.
+See `data/templates/shadow_fixtures_template.csv` for the real-run input shape and `data/samples/shadow_fixtures_sample.csv` for a safe synthetic/sample input. The template is not a prediction artefact and must have every placeholder replaced before generation.
+
+## First Real Shadow Runbook
+
+1. Prepare a fixture input file from a real, approved upcoming WSL fixture source.
+   - Save local working inputs outside Git unless they are public and approved for commit.
+   - Use `data/templates/shadow_fixtures_template.csv` as the column guide.
+   - Include one row per upcoming fixture and prefer stable source `fixture_id` values over fallback IDs.
+2. Confirm the historical export contains only matches known before each fixture date.
+   - The usual local path is `data/exports/wsl_match_data.csv`.
+   - The generation code trains each model on `match_date < fixture_date` for every fixture group.
+3. Choose the candidate set.
+   - Start with the core tracking set below unless a candidate is temporarily broken.
+   - Omit unavailable candidates with explicit repeated `--model` arguments; do not change production prediction code to make a shadow run pass.
+4. Validate fixtures before generating predictions.
+   - This confirms the fixture schema and prints the planned model set and current git SHA.
+5. Generate a timestamped artefact only from real upcoming fixture input.
+   - Write artefacts under `reports/shadow_predictions/`.
+   - Use UTC-style filenames, for example `shadow_predictions_20260905T103000Z.json`.
+6. Verify provenance immediately after generation.
+   - Open the JSON metadata and confirm `git_sha`, `generated_at`, `history_csv`, `fixtures`, `models` and `min_train_matches`.
+   - Confirm every prediction row has a non-empty `prediction_timestamp`, `git_sha`, `model_config` and stable fixture key.
+7. Replay after results are known.
+   - Prepare a results file with matching `fixture_id` values and either `actual_outcome` or `home_goals`/`away_goals`.
+   - Write replay output under `reports/shadow_predictions/`.
+   - Treat pending fixtures as unevaluated; only completed rows contribute to metrics.
 
 ## Prediction Artefact Schema
 
@@ -43,18 +70,54 @@ Every saved prediction row must include:
 | `p_home_win`, `p_draw`, `p_away_win` | H/D/A probabilities in unit scale, summing to approximately 1. |
 | `predicted_outcome` | Highest-probability H/D/A label. |
 
-The default shadow tracking set is `champion_dc_xg`, `dc_fit_rho_each_fold`, `txg_xg_pseudocount_010`, `blend_dc_fit_txg_50_50`, `regularised_team_strength`, `improved_logistic_regression` and `random_forest`. These are evaluation-only candidates; no production registry or champion promotion is implied.
+## Candidate Model Selection
+
+The core shadow tracking set is:
+
+| candidate | status in current framework | note |
+| --- | --- | --- |
+| `champion_dc_xg` | callable | Operational/reference model; remains the first tracked row and is not promoted or modified by shadow testing. |
+| `dc_fit_rho_each_fold` | callable | Best probability-quality candidate overall from Phase 8A. |
+| `txg_xg_pseudocount_010` | callable | Most balanced champion-family candidate from Phase 8A. |
+| `blend_dc_fit_txg_50_50` | callable | Best non-market blend so far; evaluation-only fixed blend of the two champion-family variants. |
+| `regularised_team_strength` | callable | Strongest standalone statistical challenger. |
+| `improved_logistic_regression` | callable | Best feature-based ML challenger on Brier/log loss. |
+| `random_forest` | callable, optional | Useful tree-based challenger, but not part of any production promotion decision. |
+
+The neural-network proof of concept remains research-only and is intentionally not part of the default shadow run. If a future checkout cannot call one of the listed candidates through `evaluation.shadow`, document the omission in the run notes and pass only the callable candidates with repeated `--model` arguments.
 
 ## Generate
 
+Validate the fixture file first. This command does not fit models and does not write an artefact:
+
 ```powershell
 .\.venv\Scripts\python.exe scripts\generate_shadow_predictions.py `
-  --history-csv data\exports\wsl_matches.csv `
-  --fixtures data\samples\shadow_fixtures_sample.csv `
+  --fixtures data\templates\shadow_fixtures_template.csv `
+  --validate-fixtures-only
+```
+
+For a real run, replace the template path with the approved real upcoming fixture file:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\generate_shadow_predictions.py `
+  --history-csv data\exports\wsl_match_data.csv `
+  --fixtures data\exports\upcoming_wsl_fixtures.csv `
   --output reports\shadow_predictions\shadow_predictions_YYYYMMDDTHHMMSSZ.json
 ```
 
 The generation script fits each selected candidate only on historical matches before each fixture date. If a Phase 8 candidate is not callable through the offline evaluation providers in a future checkout, omit it with explicit `--model` arguments rather than changing production prediction code.
+
+To run a smaller explicit set:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\generate_shadow_predictions.py `
+  --history-csv data\exports\wsl_match_data.csv `
+  --fixtures data\exports\upcoming_wsl_fixtures.csv `
+  --model champion_dc_xg `
+  --model dc_fit_rho_each_fold `
+  --model txg_xg_pseudocount_010 `
+  --output reports\shadow_predictions\shadow_predictions_YYYYMMDDTHHMMSSZ.json
+```
 
 ## Replay
 
@@ -68,3 +131,12 @@ When results are available, prepare a results CSV or JSON with `fixture_id` plus
 ```
 
 Pending fixtures remain in the replay payload with no metrics impact. Completed fixtures are ranked with Brier score, log loss and accuracy using the existing evaluation comparison helpers.
+
+## Safety Checklist
+
+- `model/wsl_xg_model.py` is unchanged.
+- `champion_dc_xg` remains the operational/reference model.
+- No model is promoted from a shadow run alone.
+- Fixture templates and samples are clearly labelled and cannot be mistaken for real predictions.
+- Real prediction artefacts are generated only from real upcoming fixture input.
+- `.env`, credentials, Supabase keys and private exports stay out of Git.

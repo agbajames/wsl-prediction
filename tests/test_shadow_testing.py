@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -10,10 +12,12 @@ import pytest
 
 from evaluation.shadow import (
     DEFAULT_SHADOW_MODELS,
+    current_git_sha,
     evaluate_shadow_predictions,
     generate_shadow_predictions,
     load_fixture_file,
     load_shadow_predictions,
+    validate_shadow_model_names,
     validate_shadow_prediction_frame,
     write_shadow_predictions,
 )
@@ -98,6 +102,22 @@ def test_default_shadow_tracking_set_keeps_champion_reference() -> None:
     assert "blend_dc_fit_txg_50_50" in DEFAULT_SHADOW_MODELS
 
 
+def test_shadow_model_name_validation_rejects_unknown_candidate() -> None:
+    with pytest.raises(ValueError, match="Unknown model"):
+        validate_shadow_model_names(("champion_dc_xg", "not_a_model"))
+
+
+def test_current_git_sha_reads_ref_without_subprocess(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    git_dir = tmp_path / ".git"
+    ref_dir = git_dir / "refs" / "heads"
+    ref_dir.mkdir(parents=True)
+    git_dir.joinpath("HEAD").write_text("ref: refs/heads/main\n", encoding="utf-8")
+    ref_dir.joinpath("main").write_text("abc123def456\n", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+
+    assert current_git_sha() == "abc123def456"
+
+
 def test_shadow_prediction_artifact_schema_and_timestamp(
     historical_matches: pd.DataFrame,
     upcoming_fixtures: pd.DataFrame,
@@ -175,6 +195,27 @@ def test_fixture_loader_accepts_csv_and_generates_fallback_id(tmp_path: Path) ->
 
     assert fixtures.loc[0, "fixture_id"] == "2026-09-06_arsenal_vs_chelsea"
     assert str(fixtures.loc[0, "match_date"].date()) == "2026-09-06"
+
+
+def test_generate_script_validate_fixtures_only_does_not_require_output(tmp_path: Path) -> None:
+    fixture_path = tmp_path / "fixtures.csv"
+    fixture_path.write_text("fixture_date,home_team,away_team\n2026-09-06,Arsenal,Chelsea\n", encoding="utf-8")
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/generate_shadow_predictions.py",
+            "--fixtures",
+            str(fixture_path),
+            "--validate-fixtures-only",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert "Validated 1 fixture row(s)" in result.stdout
+    assert "champion_dc_xg" in result.stdout
 
 
 def test_replay_evaluator_handles_pending_fixtures(
