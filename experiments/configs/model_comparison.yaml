@@ -1,0 +1,37 @@
+default_models:
+  - champion_dc_xg
+  - naive_outcome_rate
+  - elo_baseline
+  - logistic_regression
+
+backtest:
+  test_window_days: 7
+  step_days: 7
+  min_train_matches: 10
+  skip_insufficient_history: true
+
+input_schema:
+  required_for_all_models:
+    - match_date
+    - home_team
+    - away_team
+    - home_goals
+    - away_goals
+  required_for_champion_dc_xg:
+    - round_label
+    - home_xg
+    - away_xg
+    - home_np_xg
+    - away_np_xg
+
+outputs:
+  markdown_report: reports/model_comparison.md
+  json_summary: reports/model_comparison.json
+
+notes: >
+  Runs requested models on identical rolling folds using a local CSV. Champion
+  execution requires the richer xG schema, while baseline/logistic tests can
+  run on local mocked result data. Small WSL samples can make fold-level
+  metrics noisy, so use calibration and failure-analysis sections alongside
+  headline Brier/log-loss rankings.
+
