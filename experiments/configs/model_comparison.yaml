@@ -1,5 +1,6 @@
 default_models:
   - champion_dc_xg
+  - regularised_team_strength
   - naive_outcome_rate
   - elo_baseline
   - logistic_regression

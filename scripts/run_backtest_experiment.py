@@ -3,8 +3,7 @@
 Run a local rolling backtest experiment scaffold.
 
 This script intentionally reads from a local CSV and does not require live
-Supabase access. It supports the frozen champion adapter and simple baseline
-challengers.
+Supabase access. It supports registered evaluation models.
 """
 
 from __future__ import annotations
@@ -20,9 +19,7 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from evaluation.backtesting import BacktestConfig, build_rolling_folds, config_to_dict, run_backtest_for_model
-from models.baselines import EloBaseline, NaiveOutcomeRateBaseline
-from models.champion_dc_xg import ChampionDCXGModel
-from models.logistic import LogisticRegressionChallenger
+from experiments.registry import available_models, get_model_constructor
 
 
 def parse_args() -> argparse.Namespace:
@@ -31,7 +28,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--model",
         default="champion_dc_xg",
-        choices=["champion_dc_xg", "naive_outcome_rate", "elo_baseline", "logistic_regression"],
+        choices=available_models(),
     )
     parser.add_argument("--test-start", required=True, help="First test-window date, YYYY-MM-DD.")
     parser.add_argument("--test-end", required=True, help="Final test-window date, YYYY-MM-DD.")
@@ -67,7 +64,7 @@ def main() -> None:
             "folds": [fold.metadata() for fold in folds],
         }
     else:
-        result = run_backtest_for_model(_model_provider(args.model), df, folds)
+        result = run_backtest_for_model(get_model_constructor(args.model), df, folds)
         payload = {
             "backtest_config": config_to_dict(config),
             **result.to_dict(),
@@ -78,19 +75,6 @@ def main() -> None:
         Path(args.output).write_text(text, encoding="utf-8")
     else:
         print(text)
-
-
-def _model_provider(model_name: str):
-    if model_name == "champion_dc_xg":
-        return ChampionDCXGModel
-    if model_name == "naive_outcome_rate":
-        return NaiveOutcomeRateBaseline
-    if model_name == "elo_baseline":
-        return EloBaseline
-    if model_name == "logistic_regression":
-        return LogisticRegressionChallenger
-    raise ValueError(f"Unsupported model: {model_name}")
-
 
 if __name__ == "__main__":
     main()

@@ -22,7 +22,13 @@ from evaluation.backtesting import BacktestConfig, BacktestFold, build_rolling_f
 from experiments.registry import available_models, get_model_constructor
 from scripts.run_evaluation_report import build_report_summary, render_markdown_report
 
-DEFAULT_MODELS = ("champion_dc_xg", "naive_outcome_rate", "elo_baseline", "logistic_regression")
+DEFAULT_MODELS = (
+    "champion_dc_xg",
+    "naive_outcome_rate",
+    "elo_baseline",
+    "logistic_regression",
+    "regularised_team_strength",
+)
 
 
 def parse_args() -> argparse.Namespace:
