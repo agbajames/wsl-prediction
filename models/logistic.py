@@ -16,7 +16,12 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from features.team_form import FEATURE_NAMES, TeamFormFeatureBuilder, training_outcomes
+from features.team_form import (
+    FEATURE_NAMES,
+    ImprovedTeamFormFeatureBuilder,
+    TeamFormFeatureBuilder,
+    training_outcomes,
+)
 from models.baselines import NaiveOutcomeRateBaseline
 
 OUTCOME_LABELS = ("H", "D", "A")
@@ -200,6 +205,62 @@ class LogisticRegressionChallenger:
         if self._standard_mean is None or self._standard_scale is None:
             raise RuntimeError("Feature scaler is not fitted.")
         return (x_values - self._standard_mean) / self._standard_scale
+
+
+@dataclass
+class ImprovedLogisticRegressionChallenger(LogisticRegressionChallenger):
+    """Conservative richer-feature logistic challenger for Phase 8B."""
+
+    min_training_matches: int = 10
+    regularization_c: float = 0.5
+    max_iter: int = 800
+    learning_rate: float = 0.08
+    l2_penalty: float = 0.2
+    solver: str = "auto"
+    feature_group: str = "xg"
+    recent_window: int = 4
+
+    _feature_builder: ImprovedTeamFormFeatureBuilder = field(init=False, repr=False)
+
+    def __post_init__(self) -> None:
+        self._feature_builder = ImprovedTeamFormFeatureBuilder(
+            feature_group=self.feature_group,
+            recent_window=self.recent_window,
+        )
+
+    @property
+    def name(self) -> str:
+        return "improved_logistic_regression"
+
+    @property
+    def family(self) -> str:
+        return "multinomial_logistic_regression_rich_form"
+
+    @property
+    def version(self) -> str:
+        return "v1"
+
+    def export_config(self) -> dict[str, Any]:
+        config = asdict(self)
+        for key in (
+            "_feature_builder",
+            "_standard_mean",
+            "_standard_scale",
+            "_weights",
+            "_sklearn_model",
+            "_fallback_model",
+            "_training_matches",
+            "_fit_mode",
+        ):
+            config.pop(key, None)
+        return {
+            "model_name": self.name,
+            "model_family": self.family,
+            "model_version": self.version,
+            "required_columns": list(REQUIRED_COLUMNS),
+            "features": list(self._feature_builder.feature_names),
+            "config": config,
+        }
 
 
 def _fit_softmax_regression(
