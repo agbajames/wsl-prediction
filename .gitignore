@@ -13,3 +13,4 @@ dist/
 raw/
 predictions/
 *.csv
+data/exports/*.csv
