@@ -1,0 +1,533 @@
+{
+  "challenger_comparison": {
+    "both_correct": 58,
+    "both_wrong": 36,
+    "challenger_model": "logistic_regression",
+    "challenger_only_correct": 5,
+    "champion_only_correct": 10,
+    "mean_actual_probability_delta_champion_minus_challenger": 0.0326,
+    "mean_log_loss_delta_champion_minus_challenger": -0.0891,
+    "paired_matches": 109
+  },
+  "champion_model": "champion_dc_xg",
+  "comparison": [
+    {
+      "accuracy": 0.6238532110091743,
+      "brier_score": 0.5052116241719459,
+      "log_loss": 0.8668995129359902,
+      "model_name": "champion_dc_xg",
+      "n_matches": 109,
+      "rank": 1
+    },
+    {
+      "accuracy": 0.5779816513761468,
+      "brier_score": 0.5561781781310142,
+      "log_loss": 0.9559694660605309,
+      "model_name": "logistic_regression",
+      "n_matches": 109,
+      "rank": 2
+    },
+    {
+      "accuracy": 0.5596330275229358,
+      "brier_score": 0.56759761937794,
+      "log_loss": 0.9596499446607842,
+      "model_name": "elo_baseline",
+      "n_matches": 109,
+      "rank": 3
+    },
+    {
+      "accuracy": 0.45871559633027525,
+      "brier_score": 0.6401285940947251,
+      "log_loss": 1.0575784983860914,
+      "model_name": "naive_outcome_rate",
+      "n_matches": 109,
+      "rank": 4
+    }
+  ],
+  "confidence_bands": [
+    {
+      "accuracy": 0.8372,
+      "confidence_bucket": "high",
+      "mean_actual_probability": 0.6613,
+      "mean_confidence": 0.7544,
+      "mean_log_loss": 0.5502,
+      "n": 43
+    },
+    {
+      "accuracy": 0.4667,
+      "confidence_bucket": "low",
+      "mean_actual_probability": 0.3397,
+      "mean_confidence": 0.3697,
+      "mean_log_loss": 1.0855,
+      "n": 15
+    },
+    {
+      "accuracy": 0.4902,
+      "confidence_bucket": "medium",
+      "mean_actual_probability": 0.3695,
+      "mean_confidence": 0.4915,
+      "mean_log_loss": 1.0696,
+      "n": 51
+    }
+  ],
+  "favourite_draw_breakdown": [
+    {
+      "accuracy": 0.5952,
+      "favourite_type": "away_favourite",
+      "mean_actual_probability": 0.4624,
+      "mean_confidence": 0.5723,
+      "mean_log_loss": 0.8924,
+      "n": 42
+    },
+    {
+      "accuracy": 0.6508,
+      "favourite_type": "home_favourite",
+      "mean_actual_probability": 0.5014,
+      "mean_confidence": 0.5965,
+      "mean_log_loss": 0.8361,
+      "n": 63
+    },
+    {
+      "accuracy": 0.5,
+      "favourite_type": "predicted_draw",
+      "mean_actual_probability": 0.3403,
+      "mean_confidence": 0.3598,
+      "mean_log_loss": 1.0831,
+      "n": 4
+    }
+  ],
+  "headline_metrics": {
+    "accuracy": 0.6238532110091743,
+    "brier_score": 0.5052116241719459,
+    "log_loss": 0.8668995129359902,
+    "model_name": "champion_dc_xg",
+    "n_matches": 109,
+    "rank": 1
+  },
+  "high_confidence_correct": [
+    {
+      "actual_outcome": "H",
+      "actual_probability": 0.9189,
+      "away_team": "Leicester City",
+      "home_team": "Arsenal",
+      "match_date": "2026-04-29",
+      "predicted_confidence": 0.9189,
+      "predicted_outcome": "H",
+      "round": "R14",
+      "row_log_loss": 0.0846
+    },
+    {
+      "actual_outcome": "H",
+      "actual_probability": 0.908,
+      "away_team": "Everton",
+      "home_team": "Manchester City",
+      "match_date": "2026-01-11",
+      "predicted_confidence": 0.908,
+      "predicted_outcome": "H",
+      "round": "R12",
+      "row_log_loss": 0.0965
+    },
+    {
+      "actual_outcome": "H",
+      "actual_probability": 0.894,
+      "away_team": "Leicester City",
+      "home_team": "Manchester City",
+      "match_date": "2026-02-13",
+      "predicted_confidence": 0.894,
+      "predicted_outcome": "H",
+      "round": "R16",
+      "row_log_loss": 0.112
+    },
+    {
+      "actual_outcome": "H",
+      "actual_probability": 0.8651,
+      "away_team": "Everton",
+      "home_team": "Arsenal",
+      "match_date": "2026-05-13",
+      "predicted_confidence": 0.8651,
+      "predicted_outcome": "H",
+      "round": "R21",
+      "row_log_loss": 0.1449
+    },
+    {
+      "actual_outcome": "H",
+      "actual_probability": 0.862,
+      "away_team": "West Ham United",
+      "home_team": "Manchester City",
+      "match_date": "2025-11-01",
+      "predicted_confidence": 0.862,
+      "predicted_outcome": "H",
+      "round": "R7",
+      "row_log_loss": 0.1485
+    },
+    {
+      "actual_outcome": "H",
+      "actual_probability": 0.862,
+      "away_team": "Aston Villa",
+      "home_team": "Manchester City",
+      "match_date": "2025-12-14",
+      "predicted_confidence": 0.862,
+      "predicted_outcome": "H",
+      "round": "R11",
+      "row_log_loss": 0.1485
+    },
+    {
+      "actual_outcome": "H",
+      "actual_probability": 0.86,
+      "away_team": "West Ham United",
+      "home_team": "Arsenal",
+      "match_date": "2026-03-21",
+      "predicted_confidence": 0.86,
+      "predicted_outcome": "H",
+      "round": "R18",
+      "row_log_loss": 0.1508
+    },
+    {
+      "actual_outcome": "H",
+      "actual_probability": 0.85,
+      "away_team": "Tottenham Hotspur",
+      "home_team": "Arsenal",
+      "match_date": "2026-03-28",
+      "predicted_confidence": 0.85,
+      "predicted_outcome": "H",
+      "round": "R19",
+      "row_log_loss": 0.1625
+    },
+    {
+      "actual_outcome": "H",
+      "actual_probability": 0.8302,
+      "away_team": "Tottenham Hotspur",
+      "home_team": "Manchester City",
+      "match_date": "2026-03-21",
+      "predicted_confidence": 0.8302,
+      "predicted_outcome": "H",
+      "round": "R18",
+      "row_log_loss": 0.1861
+    },
+    {
+      "actual_outcome": "A",
+      "actual_probability": 0.83,
+      "away_team": "Manchester City",
+      "home_team": "Liverpool",
+      "match_date": "2025-10-12",
+      "predicted_confidence": 0.83,
+      "predicted_outcome": "A",
+      "round": "R6",
+      "row_log_loss": 0.1863
+    }
+  ],
+  "high_confidence_misses": [
+    {
+      "actual_outcome": "A",
+      "actual_probability": 0.045,
+      "away_team": "Everton",
+      "home_team": "Chelsea",
+      "match_date": "2025-12-07",
+      "predicted_confidence": 0.8531,
+      "predicted_outcome": "H",
+      "round": "R10",
+      "row_log_loss": 3.1021
+    },
+    {
+      "actual_outcome": "D",
+      "actual_probability": 0.147,
+      "away_team": "Chelsea",
+      "home_team": "Liverpool",
+      "match_date": "2025-11-16",
+      "predicted_confidence": 0.792,
+      "predicted_outcome": "A",
+      "round": "R9",
+      "row_log_loss": 1.9173
+    },
+    {
+      "actual_outcome": "D",
+      "actual_probability": 0.149,
+      "away_team": "Manchester City",
+      "home_team": "Aston Villa",
+      "match_date": "2026-03-15",
+      "predicted_confidence": 0.755,
+      "predicted_outcome": "A",
+      "round": "R17",
+      "row_log_loss": 1.9038
+    },
+    {
+      "actual_outcome": "D",
+      "actual_probability": 0.161,
+      "away_team": "Everton",
+      "home_team": "Aston Villa",
+      "match_date": "2025-11-02",
+      "predicted_confidence": 0.755,
+      "predicted_outcome": "H",
+      "round": "R7",
+      "row_log_loss": 1.8264
+    },
+    {
+      "actual_outcome": "A",
+      "actual_probability": 0.153,
+      "away_team": "Aston Villa",
+      "home_team": "Manchester United",
+      "match_date": "2025-11-08",
+      "predicted_confidence": 0.685,
+      "predicted_outcome": "H",
+      "round": "R8",
+      "row_log_loss": 1.8773
+    },
+    {
+      "actual_outcome": "D",
+      "actual_probability": 0.2172,
+      "away_team": "Arsenal",
+      "home_team": "Tottenham Hotspur",
+      "match_date": "2025-11-16",
+      "predicted_confidence": 0.6637,
+      "predicted_outcome": "A",
+      "round": "R9",
+      "row_log_loss": 1.5269
+    },
+    {
+      "actual_outcome": "D",
+      "actual_probability": 0.2643,
+      "away_team": "Arsenal",
+      "home_team": "Brighton",
+      "match_date": "2026-05-06",
+      "predicted_confidence": 0.6386,
+      "predicted_outcome": "A",
+      "round": "R16",
+      "row_log_loss": 1.3308
+    }
+  ],
+  "input_summary": {
+    "models": [
+      "champion_dc_xg",
+      "elo_baseline",
+      "logistic_regression",
+      "naive_outcome_rate"
+    ],
+    "n_champion_rows": 109,
+    "n_prediction_rows": 436
+  },
+  "limitations": [
+    "Diagnostics use one generated comparison artefact only.",
+    "The champion sample contains 109 evaluated matches.",
+    "Rows are evaluated from completed fixtures already present in the comparison artefact."
+  ],
+  "nearest_challenger": {
+    "accuracy": 0.5779816513761468,
+    "brier_score": 0.5561781781310142,
+    "log_loss": 0.9559694660605309,
+    "model_name": "logistic_regression",
+    "n_matches": 109,
+    "rank": 2
+  },
+  "recommendations": [
+    "Keep champion_dc_xg as the reference model until a challenger beats it on the same folds.",
+    "Test calibration improvements before adding new model families, because confidence gaps are visible in bands.",
+    "Review team-specific residuals for Tottenham Hotspur, Brighton, West Ham United before changing the model form."
+  ],
+  "round_fold_summary": [
+    {
+      "accuracy": 0.5,
+      "mean_confidence": 0.4333,
+      "mean_log_loss": 1.2026,
+      "n": 6,
+      "round_or_fold": "R5"
+    },
+    {
+      "accuracy": 0.5,
+      "mean_confidence": 0.6305,
+      "mean_log_loss": 1.1046,
+      "n": 6,
+      "round_or_fold": "R10"
+    },
+    {
+      "accuracy": 0.6667,
+      "mean_confidence": 0.5517,
+      "mean_log_loss": 1.1006,
+      "n": 6,
+      "round_or_fold": "R9"
+    },
+    {
+      "accuracy": 0.5,
+      "mean_confidence": 0.5958,
+      "mean_log_loss": 1.0838,
+      "n": 6,
+      "round_or_fold": "R17"
+    },
+    {
+      "accuracy": 0.5,
+      "mean_confidence": 0.5361,
+      "mean_log_loss": 1.0266,
+      "n": 6,
+      "round_or_fold": "R15"
+    },
+    {
+      "accuracy": 0.3333,
+      "mean_confidence": 0.565,
+      "mean_log_loss": 1.0212,
+      "n": 6,
+      "round_or_fold": "R8"
+    },
+    {
+      "accuracy": 0.5,
+      "mean_confidence": 0.5551,
+      "mean_log_loss": 1.0044,
+      "n": 6,
+      "round_or_fold": "R20"
+    },
+    {
+      "accuracy": 0.5,
+      "mean_confidence": 0.5982,
+      "mean_log_loss": 0.9145,
+      "n": 6,
+      "round_or_fold": "R11"
+    },
+    {
+      "accuracy": 0.6667,
+      "mean_confidence": 0.4687,
+      "mean_log_loss": 0.842,
+      "n": 6,
+      "round_or_fold": "R13"
+    },
+    {
+      "accuracy": 1.0,
+      "mean_confidence": 0.438,
+      "mean_log_loss": 0.8255,
+      "n": 1,
+      "round_or_fold": "R3"
+    },
+    {
+      "accuracy": 0.5,
+      "mean_confidence": 0.5609,
+      "mean_log_loss": 0.7924,
+      "n": 6,
+      "round_or_fold": "R14"
+    },
+    {
+      "accuracy": 0.6667,
+      "mean_confidence": 0.5564,
+      "mean_log_loss": 0.786,
+      "n": 6,
+      "round_or_fold": "R19"
+    },
+    {
+      "accuracy": 0.8333,
+      "mean_confidence": 0.6287,
+      "mean_log_loss": 0.759,
+      "n": 6,
+      "round_or_fold": "R7"
+    },
+    {
+      "accuracy": 0.8333,
+      "mean_confidence": 0.618,
+      "mean_log_loss": 0.7481,
+      "n": 6,
+      "round_or_fold": "R21"
+    },
+    {
+      "accuracy": 0.6667,
+      "mean_confidence": 0.6161,
+      "mean_log_loss": 0.7405,
+      "n": 6,
+      "round_or_fold": "R12"
+    },
+    {
+      "accuracy": 0.6667,
+      "mean_confidence": 0.6447,
+      "mean_log_loss": 0.7082,
+      "n": 6,
+      "round_or_fold": "R16"
+    },
+    {
+      "accuracy": 0.6667,
+      "mean_confidence": 0.5847,
+      "mean_log_loss": 0.7022,
+      "n": 6,
+      "round_or_fold": "R18"
+    },
+    {
+      "accuracy": 0.8333,
+      "mean_confidence": 0.6322,
+      "mean_log_loss": 0.5653,
+      "n": 6,
+      "round_or_fold": "R22"
+    },
+    {
+      "accuracy": 0.8333,
+      "mean_confidence": 0.6594,
+      "mean_log_loss": 0.5093,
+      "n": 6,
+      "round_or_fold": "R6"
+    }
+  ],
+  "team_error_summary": [
+    {
+      "error_rate": 0.5556,
+      "mean_confidence": 0.5421,
+      "mean_log_loss": 0.9921,
+      "n": 18,
+      "team": "Tottenham Hotspur"
+    },
+    {
+      "error_rate": 0.5,
+      "mean_confidence": 0.5038,
+      "mean_log_loss": 1.0247,
+      "n": 18,
+      "team": "Brighton"
+    },
+    {
+      "error_rate": 0.5,
+      "mean_confidence": 0.5386,
+      "mean_log_loss": 0.9439,
+      "n": 18,
+      "team": "West Ham United"
+    },
+    {
+      "error_rate": 0.4737,
+      "mean_confidence": 0.5464,
+      "mean_log_loss": 1.0439,
+      "n": 19,
+      "team": "Aston Villa"
+    },
+    {
+      "error_rate": 0.4737,
+      "mean_confidence": 0.5419,
+      "mean_log_loss": 0.9105,
+      "n": 19,
+      "team": "Liverpool"
+    },
+    {
+      "error_rate": 0.3889,
+      "mean_confidence": 0.5144,
+      "mean_log_loss": 0.9309,
+      "n": 18,
+      "team": "London City Lionesses"
+    },
+    {
+      "error_rate": 0.3333,
+      "mean_confidence": 0.6085,
+      "mean_log_loss": 0.9524,
+      "n": 18,
+      "team": "Everton"
+    },
+    {
+      "error_rate": 0.3333,
+      "mean_confidence": 0.5566,
+      "mean_log_loss": 0.8918,
+      "n": 18,
+      "team": "Manchester United"
+    },
+    {
+      "error_rate": 0.2778,
+      "mean_confidence": 0.6413,
+      "mean_log_loss": 0.8422,
+      "n": 18,
+      "team": "Chelsea"
+    },
+    {
+      "error_rate": 0.2778,
+      "mean_confidence": 0.6699,
+      "mean_log_loss": 0.6273,
+      "n": 18,
+      "team": "Arsenal"
+    }
+  ]
+}
