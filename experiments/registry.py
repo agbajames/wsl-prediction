@@ -12,6 +12,7 @@ from models.champion_dc_xg import ChampionDCXGModel
 from models.logistic import ImprovedLogisticRegressionChallenger, LogisticRegressionChallenger
 from models.poisson_regression import PoissonRegressionChallenger
 from models.team_strength import RegularisedTeamStrengthModel
+from models.tree_based import RandomForestChallenger
 
 ModelConstructor = Callable[[], EvaluationModel]
 
@@ -23,6 +24,7 @@ MODEL_REGISTRY: dict[str, ModelConstructor] = {
     "improved_logistic_regression": ImprovedLogisticRegressionChallenger,
     "regularised_team_strength": RegularisedTeamStrengthModel,
     "poisson_regression": PoissonRegressionChallenger,
+    "random_forest": RandomForestChallenger,
 }
 
 
