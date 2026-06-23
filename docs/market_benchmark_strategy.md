@@ -4,7 +4,7 @@ Phase 1 adds an evaluation-only market-implied benchmark layer for WSL 2025-26
 1X2 odds data. The benchmark derives proportional no-vig probabilities directly
 from raw odds and treats them as an external market probability reference. It
 does not train a model, generate model features, change production prediction
-behaviour or claim that any model beats bookmakers.
+behaviour or make production betting claims.
 
 ## Scope
 
@@ -108,7 +108,8 @@ Use precise language:
 
 Avoid overclaiming:
 
-- Do not say the model beats bookmakers from this benchmark alone.
+- Keep model-vs-market conclusions limited to the matched-fixture data and
+  documented odds provenance.
 - Do not compare model predictions against market probabilities until fixture
   matching and snapshot timing are verified.
 - Do not publish final conclusions if severe supplied-vs-odds-derived
@@ -116,3 +117,11 @@ Avoid overclaiming:
 
 Odds snapshot timing is analytically important. Opening, closing and manual
 midweek captures can produce different benchmark conclusions.
+
+## Phase 2 Handoff
+
+The Phase 2 model-vs-market comparison should call the Phase 1 loader and
+normalizer rather than reading supplied `P_Home`, `P_Draw` and `P_Away` as
+benchmark probabilities. It should use matched fixtures only, with normalized
+date/home/away keys and explicit team aliases documented in
+`docs/model_vs_market_comparison.md`.

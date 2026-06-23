@@ -71,6 +71,12 @@ diagnostic/reference columns. These market fields are evaluation-only. They
 must not be used as model features or training inputs unless a later roadmap
 phase explicitly designs leakage-safe market modelling.
 
+The Phase 2 model-vs-market comparison uses a fallback fixture key built from
+normalized match date, home team and away team. It applies explicit display-name
+aliases for known source differences, such as `Manchester United` to
+`Manchester Utd`, `Tottenham Hotspur` to `Tottenham`, `Leicester City` to
+`Leicester`, and `West Ham United` to `West Ham`.
+
 ## D. Future Multi-League Columns
 
 These fields are not required for the current WSL-only champion model, but they should become part of the canonical schema before PL-to-WSL transfer or multi-competition experiments.

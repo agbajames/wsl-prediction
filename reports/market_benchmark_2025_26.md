@@ -63,5 +63,5 @@ This report derives proportional no-vig probabilities directly from the raw frac
 
 ## Notes
 
-- Do not interpret this as evidence that any model beats bookmakers.
+- Do not interpret this as a production decision artifact.
 - Final published conclusions require verified odds source, snapshot timing and licensing.
