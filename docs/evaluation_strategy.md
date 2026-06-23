@@ -9,6 +9,7 @@ The evaluation baseline makes the WSL Prediction Engine measurable without chang
 - `evaluation/metrics.py`: reusable three-way football prediction metrics.
 - `evaluation/run_evaluation.py`: repeatable walk-forward evaluation runner.
 - `evaluation/evaluate_logged_predictions.py`: evaluates prediction runs already logged from the dashboard replay.
+- `evaluation/market_benchmark.py`: evaluation-only market-implied benchmark validation and reporting.
 - `evaluation/evaluation_store.py`: optional Supabase persistence for offline evaluation runs.
 - `model/wsl_xg_model.py`: existing walk-forward backtest implementation reused as the prediction engine.
 - `evaluation/eval_store.py`: existing prediction-run audit logging, unchanged in this checkpoint.
@@ -99,6 +100,31 @@ The logged evaluator:
 Strict round-label filtering is required because some verified replay date windows include postponed or rescheduled fixtures from other rounds. For example, a long Week 16 date window can contain R20, R21, or R14 fixtures. Logged replay evaluation therefore treats the dashboard run trigger as the intended week and excludes any stored prediction rows whose `round_label` does not match that week. Excluded rows are reported in `data_snapshot.excluded_round_mismatches` and in the Markdown report.
 
 This is the primary evaluation method for interview evidence from the replay workflow.
+
+## Market-Implied Benchmark
+
+The market benchmark derives proportional no-vig 1X2 probabilities directly
+from raw odds columns and evaluates them as an external market probability
+reference. It is not model training data, does not create model features, and
+does not change production prediction behaviour.
+
+Run the league-only benchmark against the ignored local full CSV:
+
+```bash
+python scripts/run_market_benchmark.py \
+  --csv data/exports/wsl_results_probabilities_2025_2026.csv \
+  --output-md reports/market_benchmark_2025_26.md \
+  --output-json reports/market_benchmark_2025_26.json \
+  --output-rows reports/market_benchmark_2025_26_rows.csv
+```
+
+The evaluator excludes non-league rows with a non-empty `Note` by default,
+derives actual H/D/A outcomes from goals, derives benchmark probabilities from
+`Odds_1`, `Odds_X` and `Odds_2`, checks supplied implied/de-vigged probability
+columns as diagnostics, and produces Markdown, JSON and row-level CSV
+artefacts. Use safe language such as "market-implied benchmark" or "external
+market probability reference"; do not claim any model beats bookmakers unless
+odds source, snapshot timing and licensing are verified.
 
 ## Unit Testing
 
