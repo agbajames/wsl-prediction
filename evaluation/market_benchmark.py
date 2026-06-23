@@ -293,7 +293,7 @@ def render_market_benchmark_markdown(result: dict[str, Any]) -> str:
         "",
         "## Notes",
         "",
-        "- Do not interpret this as evidence that any model beats bookmakers.",
+        "- Do not interpret this as a production decision artifact.",
         "- Final published conclusions require verified odds source, snapshot timing and licensing.",
     ]
     return "\n".join(lines) + "\n"

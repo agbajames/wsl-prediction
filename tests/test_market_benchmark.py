@@ -90,7 +90,7 @@ def test_render_market_benchmark_markdown_uses_safe_language() -> None:
     assert "external market probability reference" in markdown
     assert "raw fractional odds" in markdown
     assert "data-quality diagnostics" in markdown
-    assert "Do not interpret this as evidence that any model beats bookmakers" in markdown
+    assert "production decision artifact" in markdown
 
 
 def test_write_market_outputs_creates_report_artifacts(tmp_path: Path) -> None:

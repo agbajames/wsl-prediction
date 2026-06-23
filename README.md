@@ -123,8 +123,21 @@ python scripts/run_market_benchmark.py \
 This derives proportional no-vig probabilities from raw odds and treats them as
 an external market probability reference only. The supplied de-vigged
 probability columns are retained for diagnostics. This is not model training
-data, does not create model features and should not be used to claim that the
-model beats bookmakers.
+data, does not create model features and does not change production prediction
+behaviour.
+
+Run the offline matched-fixture model-vs-market comparison:
+```bash
+python scripts/run_model_market_comparison.py \
+  --model-json reports/model_comparison_first_run.json \
+  --market-csv data/exports/wsl_results_probabilities_2025_2026.csv \
+  --output-md reports/model_vs_market_comparison_2025_26.md \
+  --output-json reports/model_vs_market_comparison_2025_26.json \
+  --output-rows reports/model_vs_market_comparison_2025_26_rows.csv
+```
+
+This comparison uses matched fixtures only and keeps market odds as an
+evaluation-only external probability reference.
 
 ### Run mid-season Monte Carlo simulation
 ```bash

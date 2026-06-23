@@ -123,8 +123,32 @@ derives actual H/D/A outcomes from goals, derives benchmark probabilities from
 `Odds_1`, `Odds_X` and `Odds_2`, checks supplied implied/de-vigged probability
 columns as diagnostics, and produces Markdown, JSON and row-level CSV
 artefacts. Use safe language such as "market-implied benchmark" or "external
-market probability reference"; do not claim any model beats bookmakers unless
-odds source, snapshot timing and licensing are verified.
+market probability reference"; keep conclusions limited by odds source,
+snapshot timing and licensing.
+
+## Model vs Market-Implied Comparison
+
+The model-vs-market comparison is an offline matched-fixture comparison between
+existing model prediction artefacts and the Phase 1 market-implied benchmark. It
+does not use market odds as training data, does not create model features, does
+not implement market blending and does not change production prediction
+behaviour.
+
+Run the primary comparison:
+
+```bash
+python scripts/run_model_market_comparison.py \
+  --model-json reports/model_comparison_first_run.json \
+  --market-csv data/exports/wsl_results_probabilities_2025_2026.csv \
+  --output-md reports/model_vs_market_comparison_2025_26.md \
+  --output-json reports/model_vs_market_comparison_2025_26.json \
+  --output-rows reports/model_vs_market_comparison_2025_26_rows.csv
+```
+
+The runner normalizes model probabilities to unit scale, derives market
+probabilities from raw odds through `evaluation.market_benchmark`, matches on
+normalized date/home/away fixture keys, reports unmatched fixtures and scores
+both model and market rows on the same matched fixture set.
 
 ## Unit Testing
 
