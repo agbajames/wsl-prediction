@@ -111,6 +111,21 @@ python -m evaluation.evaluate_logged_predictions \
   --run-trigger logged-replay-2025-26-weeks-02-22
 ```
 
+Run the evaluation-only market-implied benchmark against a local ignored odds export:
+```bash
+python scripts/run_market_benchmark.py \
+  --csv data/exports/wsl_results_probabilities_2025_2026.csv \
+  --output-md reports/market_benchmark_2025_26.md \
+  --output-json reports/market_benchmark_2025_26.json \
+  --output-rows reports/market_benchmark_2025_26_rows.csv
+```
+
+This derives proportional no-vig probabilities from raw odds and treats them as
+an external market probability reference only. The supplied de-vigged
+probability columns are retained for diagnostics. This is not model training
+data, does not create model features and should not be used to claim that the
+model beats bookmakers.
+
 ### Run mid-season Monte Carlo simulation
 ```bash
 python scripts/run_monte_carlo_simulation.py \

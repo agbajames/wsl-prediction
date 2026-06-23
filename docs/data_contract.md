@@ -62,6 +62,15 @@ Market fields support external probability benchmarking and future model-plus-ma
 
 Odds snapshot timing is analytically important. Closing prices, opening prices and manual midweek captures can produce materially different benchmark conclusions.
 
+The Phase 1 market benchmark accepts the provided source-column names
+`Odds_1`, `Odds_X`, `Odds_2`, `Imp_Home`, `Imp_Draw`, `Imp_Away`, `Overround`,
+`P_Home`, `P_Draw` and `P_Away`. It derives canonical benchmark probabilities
+from `Odds_1`, `Odds_X` and `Odds_2` using proportional no-vig normalization.
+The supplied `P_Home`, `P_Draw` and `P_Away` values are retained only as
+diagnostic/reference columns. These market fields are evaluation-only. They
+must not be used as model features or training inputs unless a later roadmap
+phase explicitly designs leakage-safe market modelling.
+
 ## D. Future Multi-League Columns
 
 These fields are not required for the current WSL-only champion model, but they should become part of the canonical schema before PL-to-WSL transfer or multi-competition experiments.
