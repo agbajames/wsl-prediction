@@ -19,10 +19,10 @@ import pandas as pd
 
 from evaluation.blending import normalise_probability_frame
 from evaluation.calibration import calibration_summary
-from evaluation.compare import compare_model_results, comparison_to_records
+from evaluation.compare import compare_model_results
 from evaluation.market_benchmark import MODEL_NAME as MARKET_MODEL_NAME
-from evaluation.market_benchmark import load_market_odds_csv, normalise_market_rows
-from evaluation.metrics import OUTCOME_LABELS, brier_score_3way, multiclass_log_loss, outcome_accuracy
+from evaluation.market_benchmark import normalise_market_rows
+from evaluation.metrics import OUTCOME_LABELS
 
 TEAM_ALIASES = {
     "manchester united": "manchester utd",
