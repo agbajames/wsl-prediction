@@ -1,0 +1,264 @@
+{
+  "backtest_config": {
+    "test_start": "2025-10-01",
+    "test_end": "2026-05-16",
+    "test_window_days": 7,
+    "step_days": 7,
+    "min_train_matches": 12,
+    "train_start": null,
+    "date_column": "match_date",
+    "round_column": "round_label",
+    "round_labels": null,
+    "skip_insufficient_history": true
+  },
+  "data_schema": {
+    "row_count": 132,
+    "completed_row_count": 132,
+    "min_match_date": "2025-09-05",
+    "max_match_date": "2026-05-16",
+    "xg_columns_present": [
+      "home_np_xg",
+      "away_np_xg",
+      "home_xg",
+      "away_xg"
+    ],
+    "allow_xg_fallback_to_goals": false,
+    "rows_that_would_fallback_to_goals": 0
+  },
+  "folds": [
+    {
+      "fold_id": "fold_001",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2025-10-01",
+      "test_start": "2025-10-01",
+      "test_end": "2025-10-07",
+      "train_size": 23,
+      "test_size": 6,
+      "round_labels": [
+        "R5"
+      ]
+    },
+    {
+      "fold_id": "fold_002",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2025-10-08",
+      "test_start": "2025-10-08",
+      "test_end": "2025-10-14",
+      "train_size": 29,
+      "test_size": 6,
+      "round_labels": [
+        "R6"
+      ]
+    },
+    {
+      "fold_id": "fold_003",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2025-10-29",
+      "test_start": "2025-10-29",
+      "test_end": "2025-11-04",
+      "train_size": 35,
+      "test_size": 6,
+      "round_labels": [
+        "R7"
+      ]
+    },
+    {
+      "fold_id": "fold_004",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2025-11-05",
+      "test_start": "2025-11-05",
+      "test_end": "2025-11-11",
+      "train_size": 41,
+      "test_size": 6,
+      "round_labels": [
+        "R8"
+      ]
+    },
+    {
+      "fold_id": "fold_005",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2025-11-12",
+      "test_start": "2025-11-12",
+      "test_end": "2025-11-18",
+      "train_size": 47,
+      "test_size": 6,
+      "round_labels": [
+        "R9"
+      ]
+    },
+    {
+      "fold_id": "fold_006",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2025-12-03",
+      "test_start": "2025-12-03",
+      "test_end": "2025-12-09",
+      "train_size": 53,
+      "test_size": 6,
+      "round_labels": [
+        "R10"
+      ]
+    },
+    {
+      "fold_id": "fold_007",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2025-12-10",
+      "test_start": "2025-12-10",
+      "test_end": "2025-12-16",
+      "train_size": 59,
+      "test_size": 7,
+      "round_labels": [
+        "R11",
+        "R3"
+      ]
+    },
+    {
+      "fold_id": "fold_008",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2026-01-07",
+      "test_start": "2026-01-07",
+      "test_end": "2026-01-13",
+      "train_size": 66,
+      "test_size": 6,
+      "round_labels": [
+        "R12"
+      ]
+    },
+    {
+      "fold_id": "fold_009",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2026-01-21",
+      "test_start": "2026-01-21",
+      "test_end": "2026-01-27",
+      "train_size": 72,
+      "test_size": 6,
+      "round_labels": [
+        "R13"
+      ]
+    },
+    {
+      "fold_id": "fold_010",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2026-01-28",
+      "test_start": "2026-01-28",
+      "test_end": "2026-02-03",
+      "train_size": 78,
+      "test_size": 5,
+      "round_labels": [
+        "R14"
+      ]
+    },
+    {
+      "fold_id": "fold_011",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2026-02-04",
+      "test_start": "2026-02-04",
+      "test_end": "2026-02-10",
+      "train_size": 83,
+      "test_size": 6,
+      "round_labels": [
+        "R15"
+      ]
+    },
+    {
+      "fold_id": "fold_012",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2026-02-11",
+      "test_start": "2026-02-11",
+      "test_end": "2026-02-17",
+      "train_size": 89,
+      "test_size": 5,
+      "round_labels": [
+        "R16"
+      ]
+    },
+    {
+      "fold_id": "fold_013",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2026-03-11",
+      "test_start": "2026-03-11",
+      "test_end": "2026-03-17",
+      "train_size": 94,
+      "test_size": 4,
+      "round_labels": [
+        "R17"
+      ]
+    },
+    {
+      "fold_id": "fold_014",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2026-03-18",
+      "test_start": "2026-03-18",
+      "test_end": "2026-03-24",
+      "train_size": 98,
+      "test_size": 8,
+      "round_labels": [
+        "R17",
+        "R18"
+      ]
+    },
+    {
+      "fold_id": "fold_015",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2026-03-25",
+      "test_start": "2026-03-25",
+      "test_end": "2026-03-31",
+      "train_size": 106,
+      "test_size": 6,
+      "round_labels": [
+        "R19"
+      ]
+    },
+    {
+      "fold_id": "fold_016",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2026-04-22",
+      "test_start": "2026-04-22",
+      "test_end": "2026-04-28",
+      "train_size": 112,
+      "test_size": 5,
+      "round_labels": [
+        "R20"
+      ]
+    },
+    {
+      "fold_id": "fold_017",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2026-04-29",
+      "test_start": "2026-04-29",
+      "test_end": "2026-05-05",
+      "train_size": 117,
+      "test_size": 6,
+      "round_labels": [
+        "R14",
+        "R21"
+      ]
+    },
+    {
+      "fold_id": "fold_018",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2026-05-06",
+      "test_start": "2026-05-06",
+      "test_end": "2026-05-12",
+      "train_size": 123,
+      "test_size": 2,
+      "round_labels": [
+        "R16",
+        "R20"
+      ]
+    },
+    {
+      "fold_id": "fold_019",
+      "train_start": "2025-09-05",
+      "train_end_exclusive": "2026-05-13",
+      "test_start": "2026-05-13",
+      "test_end": "2026-05-16",
+      "train_size": 125,
+      "test_size": 7,
+      "round_labels": [
+        "R21",
+        "R22"
+      ]
+    }
+  ],
+  "warnings": []
+}
